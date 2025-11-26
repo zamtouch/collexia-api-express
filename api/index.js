@@ -32,11 +32,21 @@ const storage = {
 
 // Health check
 app.get('/api/v1/health', (req, res) => {
-  res.json({
-    success: true,
-    message: 'API is running',
-    timestamp: new Date().toISOString()
-  });
+  try {
+    res.json({
+      success: true,
+      message: 'API is running',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || 'development'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Health check failed',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
 });
 
 // Student routes
@@ -92,10 +102,11 @@ app.post('/api/v1/students', async (req, res) => {
     
     // Check external Collexia API to see if student exists (via mandate enquiry)
     // This prevents duplicate registrations in the external system
-    const CollexiaClient = require('./utils/CollexiaClient');
-    const collexiaClient = new CollexiaClient();
-    
+    // This is optional and won't block registration if it fails
     try {
+      const CollexiaClient = require('./utils/CollexiaClient');
+      const collexiaClient = new CollexiaClient();
+      
       // Use mandate enquiry to check if student exists in external Collexia API
       // Query by debtorAccountNumber to see if any mandates exist for this account
       const enquiryUrl = `${collexiaClient.config.baseUrl}${collexiaClient.config.basePath}/mandates/batch/mandateenquiry`;
@@ -111,7 +122,8 @@ app.post('/api/v1/students', async (req, res) => {
       };
       
       const enquiryResponse = await axios.post(enquiryUrl, enquiryPayload, {
-        headers: collexiaClient.buildHeaders()
+        headers: collexiaClient.buildHeaders(),
+        timeout: 5000 // 5 second timeout to prevent hanging
       });
       
       // If mandates exist for this account, check if any match the student_id (clientNo)
@@ -124,7 +136,10 @@ app.post('/api/v1/students', async (req, res) => {
     } catch (enquiryError) {
       // If enquiry fails, it's okay - student might not exist yet or enquiry might not be supported
       // We'll proceed with registration and let the external API handle duplicates
-      console.log(`ℹ️ Could not check external Collexia API for student ${input.student_id}:`, enquiryError.message);
+      // This is a non-blocking check, so we silently continue
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`ℹ️ Could not check external Collexia API for student ${input.student_id}:`, enquiryError.message);
+      }
     }
     
     const studentData = {
@@ -251,7 +266,7 @@ app.post('/api/v1/properties', async (req, res) => {
 // Mandate routes
 const CollexiaClient = require('./utils/CollexiaClient');
 const { generateContractReference } = require('./utils/contractReference');
-const axios = require('axios');
+// axios is already imported at the top of the file
 
 app.post('/api/v1/mandates/register', async (req, res) => {
   try {
@@ -509,6 +524,7 @@ app.use((err, req, res, next) => {
 });
 
 // For Vercel serverless
+// @vercel/node expects the Express app to be exported directly
 module.exports = app;
 
 // For local development
