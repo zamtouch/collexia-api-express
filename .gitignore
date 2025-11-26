@@ -1,15 +1,33 @@
+# Dependencies
 node_modules/
+package-lock.json
+
+# Environment variables
 .env
 .env.local
+.env.*.local
+
+# Vercel
 .vercel
+
+# Logs
 *.log
 logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
 .DS_Store
+Thumbs.db
+
+# IDE
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
 
-# PHP files (keep for reference but don't deploy)
-# Uncomment if you want to exclude PHP files
-# api/*.php
-# src/*.php
-# *.php
+# Temporary files
+*.tmp
+*.temp
