@@ -1,0 +1,2405 @@
+    T
+  AF
+                                    JSON REST API
+ R
+
+                                       Interface
+                                      Specification
+D
+
+                                                        15 April 2025
+                                                         Version 3.0
+
+
+
+
+         COPYRIGHT RESERVED – Collexia PUBLICATION
+        The information contained in this document is proprietary information which is protected by copyright and
+        at law. All rights are reserved. No part of the information contained in this document may be copied,
+        reproduced, disseminated, transmitted, transcribed, extracted, stored in a retrieval system or translated
+        into any language in any form or by any means, electronic, mechanical, magnetic, optical, chemical,
+        manual or otherwise, in whole or in part, without the prior written consent of Collexia.
+        ©Collexia
+        PO Box 150, Windhoek, Namibia, 9000.
+        Tel: +264 61 21 2567
+                                                 Collexia Regno :2016/0422
+                                                      Beyond Collections
+Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                  Website: www.collexia.co
+Version Control
+
+
+
+Version No                  Date Released                      Description
+
+V1.0                          31 Aug 2023                        CO API Interface Specification 1st Draft
+
+V1.0                          27 September 2023                  Review
+
+v1.02                         9 September 2024                   Clarify response and error code detail (appendices)
+
+v1.03                         27 November 2024                   Corrected the incorrect response code in Appendix A
+
+
+
+
+    T
+v3.0                          15 April 2025                      Updated specification to include a Digital Signature.
+                                                                 Error handling and status code handling were
+                                                                 standardized to international standards
+                                                                 The URL will include V3 to indicate the version
+  AF                                                             Enhance API procedure names to describe the
+                                                                 function more clearly
+
+                                                                 Changed API Naming conventions to new standard
+
+                                                                 Replaced Keyword "Contract" with "Mandate"
+
+                                                                 Improved Error handling
+
+                                                                 Message Info
+                                                                 - Removed Message ID
+ R
+                                                                 - Global ID changed to MerchantGID
+                                                                 - RemoteGlobal ID shortened to RemoteGID
+                                                                 - Removed Message Version
+                                                                 - Added FrontEndUserName
+D
+
+                                                                 Load Mandate Request
+                                                                 - Removed Maximum Collection Amount
+                                                                 - Removed FrontEndUserName
+
+                                                                 Mandate Final Fate
+                                                                 - Removed Parameters and replaces with POST
+                                                                 Json Body
+                                                                 - Replaces GlobalId with MerchantGid
+
+                                                                 Mandate Enquiry
+                                                                 - Removed Parameters and replaces with POST
+                                                                 Json Body
+                                                                 - Replaced GlobalID with MerchantGid
+                                                                 - Improved Response by removing unneeded fields
+
+                                                                 Cancel Mandate
+
+                                                   Collexia Regno :2016/0422
+                                                        Beyond Collections
+  Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                    Website: www.collexia.co
+                                                               - Removed Parameters and replaces with POST
+                                                               Json Body
+                                                               - Removed Action Field
+
+                                                               Installment Info
+                                                               - Removed Parameters and replaces with POST
+                                                               Json Body
+                                                               - Replaces GlobalId with MerchantGid
+
+                                                               Update Installment
+                                                               - Removed Parameters and replaces with POST
+                                                               Json Body
+                                                               - Removed Cancel Action
+
+                                                               Cancel Installment Using Contract Ref
+                                                               - Removed Parameters and replaces with POST
+                                                               Json Body
+
+
+
+
+    T
+                                                               Request for Download Payments
+                                                               - Removed Parameters and replaces with POST
+                                                               Json Body
+                                                               - Improved Response by removing unneeded fields
+  AF
+ R
+D
+
+
+
+                                                 Collexia Regno :2016/0422
+                                                      Beyond Collections
+Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                  Website: www.collexia.co
+    Document Sign-Off
+
+         ●​ All parties involved acknowledge that they have read, understood and agree with the contents
+              of this document.
+
+
+
+
+ACCEPTANCE
+
+Full Name                   Role                                    Signature                                Date
+
+
+
+
+    T
+Shaun Seboa
+  AF                        Collexia
+
+
+
+Full Name                   Role                                    Signature                                Date
+
+Annette                     SOFTSPLICE
+Steenekamp
+ R
+D
+
+
+
+                                                     Collexia Regno :2016/0422
+                                                          Beyond Collections
+    Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                      Website: www.collexia.co
+Table Of Contents
+
+1. Scope.................................................................................................................................. 6
+2. Introduction........................................................................................................................ 6
+3. General Definitions............................................................................................................ 7
+4. Overview of Message Flows............................................................................................. 8
+5. REST API………………………………………………………………………………………… 10
+    5.1 Error Handling.………………………………………………………………………….….10​
+6. Mandates...........................................................................................................................12
+     6.1 Request for Mandate Load……………………………………………………………….12
+     6.2 Request Final Fate for Mandate Load…………………………………………………..13
+     6.3 Mandate Enquiry…………………………………………………………………………..14
+
+
+
+
+    T
+     6.4 Cancel of Mandate………………………………………………………………………...16
+7. Installments...................................................................................................................... 17
+     7.1 Installment Request……………………………………………………………………….17
+     7.2 Update Installment………………………………………………………………………...19
+  AF 7.3 Cancel Installment using Contract Reference And Installment No…………...……...21
+     7.4 Request for Download of Payments……………………………………………………..22
+8. Error Handling.................................................................................................................. 24
+9. Structures......................................................................................................................... 25
+    9.1 Load Mandate Request.............................................................................................. 25
+    9.2 Message Info..............................................................................................................25
+    9.3 Mandate..................................................................................................................... 25
+    9.4 Load Mandate Response........................................................................................... 27
+ R
+    9.5 Mandate Final Fate Request...................................................................................... 27
+    9.6 Mandate Final Fate Response................................................................................... 27
+    9.7 Mandate Enquiry Request..........................................................................................27
+    9.8 Mandate Enquiry Response....................................................................................... 28
+    9.9 Mandate..................................................................................................................... 28
+D
+
+    9.10 Installments.............................................................................................................. 29
+    9.11 Cancel Mandate Request......................................................................................... 31
+    9.12 Cancel Mandate Response...................................................................................... 31
+    9.13 Installment Request..................................................................................................31
+    9.14 Installment Response...............................................................................................31
+    9.15 Update Installment Request..................................................................................... 32
+    9.16 Installment................................................................................................................ 32
+    9.17 Update Installment Response.................................................................................. 32
+    9.18 Cancel Installment Request..................................................................................... 32
+    9.19 Cancel Installment Response...................................................................................33
+    9.20 Download Payments Request.................................................................................. 33
+    9.21 Download Payments Response............................................................................... 33
+    9.22 Responses............................................................................................................... 34
+                                                 Collexia Regno :2016/0422
+                                                      Beyond Collections
+Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                  Website: www.collexia.co
+   9.23 Error Response........................................................................................................ 35
+   9.24 Errors........................................................................................................................35
+  Appendix A – Response Codes (Download Payments).................................................36
+  Appendix B - Error Codes (Registration/Cancellation/Amendment)............................36
+  Appendix C - Bank…………………………………………………………..………..…………37
+  Appendix D - Industry Response Codes (displayed on website).................................38
+  Appendix E– Mapping between Response Codes and Industry Codes……..………..40
+
+
+
+
+    T
+  AF
+ R
+D
+
+
+
+                                                 Collexia Regno :2016/0422
+                                                      Beyond Collections
+Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                  Website: www.collexia.co
+1.​ Scope
+        This document is intended for analysts and programmers of institutions, which wish to
+        do. It is assumed that the reader is familiar with data processing concepts in general
+        data structures. This document addresses and details the Application Level Interface,
+        Standard Message Formats and Node Processing Requirements. The inclusion of a
+        Digital Signature enhances security. Error Handling and Status handling had been
+        standardized to comply with international standards.
+
+
+
+
+    T
+2.​ Introduction
+        Collexia will supply the interface to connect to its core system, to enable the
+  AF    transaction flow via its switching software. Collexia will obtain the payments collected
+        on behalf of the lender. The document will provide the interface specification between
+        the two parties.
+
+
+
+
+3.​ General Definitions
+ R
+API                          Application Programming Interface
+
+SwitchMax                    Transaction Switching Software
+
+EnDO                        Enhanced Debit Order
+D
+
+EnCr                        Enhanced Credit
+
+IRIS                        Intersystems data base product and Integration tool
+
+INTID                       Installment ID - unique number for a specific Installment of a mandate
+
+IOMID                       InOutMessage ID - system reference for a specific transaction
+
+
+
+
+                                                 Collexia Regno :2016/0422
+                                                      Beyond Collections
+Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                  Website: www.collexia.co
+4.​ Overview of Message Flows
+4.1​Flow chart of Mandate Registration ​
+
+
+
+
+    T
+         1. The Integrator sends an EnDO Mandate Registration (Request for Mandate Load) to
+         the Collexia Switch as an API REST operation.
+  AF     2. The EnDO Mandate Information is captured, and a response is sent back from the
+         Collexia Switch to the Integrator.
+         3. OPTIONAL : To ensure that the dates between Collexia and the 3rd party integrator
+         are in sync, make use of the Date List in the Request for Mandate Load.
+
+         4. In order to be sure the Mandate registration completed successfully, the Integrator
+         must call Request Final Response for Mandate Load ​
+ R
+
+4.2​ ReSchedule of Payments and Update Installment ​
+D
+
+
+
+                                                   Collexia Regno :2016/0422
+                                                        Beyond Collections
+  Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                    Website: www.collexia.co
+         1. The Integrator requests the current registered Mandate information from the Collexia
+         switch in order to get the INTID using the Reschedule Installment Request operation.
+         2. The Collexia switch sends back the current Mandate information as a JSON REST
+         API.. 3. The Integrator sends an Update Installment Request to change the current
+         Mandate information
+         4. The Collexia switch response to let the Integrator know if the request was received
+         successfully.
+
+
+
+4.3​Cancellation of Mandate or Installment, Download of Payments
+
+
+
+
+    T
+    or Enquiry for Information ​
+  AF
+ R
+D
+
+
+
+                                                   Collexia Regno :2016/0422
+                                                        Beyond Collections
+  Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                    Website: www.collexia.co
+4.4​ Cancellation Mandate or Installment
+
+          1. The Integrator sends a request to cancel a Mandate or Installment to the
+          Collexia Switch.
+
+          2. The Collexia switch response to let the Integrator know if the request was
+          received successfully
+
+
+4.5​Download Payment Responses
+          1. The Integrator sends a request to the Collexia switch to check if any responses are
+          available.
+          2. If any responses are available, they are sent to the Integrator.
+
+
+
+
+    T
+              - The Integrator can repeat the process until all responses have been received
+
+
+
+4.6​Enquiry for Information ​
+      ​
+  AF  ​
+      1. The Integrator sends a Mandate Enquiry to the Collexia Switch ​
+      2. The information of the Mandate/s is sent back to the Integrator. ​
+
+5.​       REST API​
+
+
+The following eight (8) API’s are the foundation of the integration between Collexia and the
+ R
+Integration partners:
+
+
+               ●​   LoadMandateRequest
+               ●​   RequestFinalResponse
+               ●​   MandateEnquiry
+D
+
+               ●​   CancelMandateRequest
+               ●​   InstallmentRequest
+               ●​   UpdateInstallmentRequest
+               ●​   CancelInstallmentRequest
+               ●​   DownloadPaymentsRequest
+
+
+5.1 Error Handling
+
+All HTTP response status codes are separated into five classes or categories. The first digit of the status
+code defines the class of response, while the last two digits do not have any classifying or categorization
+role. There are five classes defined by the standard:
+
+
+      ●​ 1xx Informational response – the request was received, continuing the process.
+                                                   Collexia Regno :2016/0422
+                                                        Beyond Collections
+  Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                    Website: www.collexia.co
+     ●​ 2xx Successful – the request was successfully received, understood, and accepted.
+     ●​ 3xx Redirection – further action needs to be taken in order to complete the request.
+     ●​ 4xx Client error – this class of status code indicates that the client seems to have erred. The
+             request contains bad syntax or cannot be fulfilled.
+     ●​ 5xx Server error – the server failed to fulfill an apparently valid request.
+
+
+As an example, these are the status codes used by the REST API’s:
+
+
+Status Code:                Description:
+
+         200                OK Everything worked as expected.
+
+         201                A resource was successfully created in response to a POST request. The
+                            Location header contains the URL pointing to the newly created resource.
+
+
+
+
+    T
+         204                The request was handled successfully and the response contains no body
+                            content (like a DELETE request).
+  AF     304                The resource was not modified. You can use the cached version.
+
+         400                Bad request. This could be caused by various actions by the user, such as
+                            providing invalid JSON data in the request body etc.
+
+         401                Authentication failed.
+
+         403                The authenticated user is not allowed to access the specified API endpoint.
+ R
+         404                The requested resource does not exist.
+
+         405                Method not allowed. Please check the Allow header for the allowed HTTP
+D
+
+                            methods.
+
+         415                Unsupported media type. The requested content type or version number is
+                            invalid.
+
+         422                Data validation failed (in response to a POST request, for example). Please
+                            check the response body for detailed error messages.
+
+         429                Too many requests. The request was rejected due to rate limiting.
+
+         500                Internal server error. This could be caused by internal program errors
+
+         ​
+
+                                                   Collexia Regno :2016/0422
+                                                        Beyond Collections
+  Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                    Website: www.collexia.co
+6.​     Mandates​
+
+6.1​Request for Mandate Load
+
+ Location          https://<host>/api/coswitchuadsrest/v3/mandates/load
+
+ Purpose           This will be used to load a new EnDO mandate on the system.
+
+ Method            Load Mandate
+
+ Verb              POST
+
+ Parameter
+
+
+
+
+    T
+                     Name                   Type        Data type                          Comment
+  AF
+ Payload
+                     Name                   Type        Data type                          Comment
+
+                     Load Mandate           raw         loadmandaterequest                 Structure of Mandate Load
+                     Request                                                               Request
+
+
+                           {
+                               "messageInfo":{
+                                   "merchantGid":10896,
+ R
+                                   "remoteGid":27,
+                                   "messageDate":"20221025",
+                                   "messageTime":"103521",
+                                   "systemUserName":"apiuser",
+                                  "frontEndUserName":"devTest"
+                               },
+                               "mandate":{
+D
+
+                                   "clientNo":"User1234",
+                                   "userReference":"DATA 10GB",
+                                   "frequencyCode":4,
+                                   "installmentAmount":1000.50,
+                                   "noOfInstallments":3,
+                                   "origin":0,
+                                   "contractReference":"2A903943000020",
+                                   "magId":46,
+                                   "initialAmount":1000.50,
+                                   "firstCollectionDate":"20221028",
+                                   "collectionDay":25,
+                                   "numberOfTrackingDays":7,
+                                   "debtorAccountName":"Piet van der Merwe",
+                                   "debtorIdentificationType":1,
+                                   "debtorIdentificationNo":"7903105019085",
+                                   "debtorAccountNumber":"1677721633",
+                                   "debtorAccountType":1,
+                                   “debtorBanId” : 64
+                                                   Collexia Regno :2016/0422
+                                                        Beyond Collections
+  Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                    Website: www.collexia.co
+                               }
+                           }
+
+
+Response
+                     Status          Return type       Comment
+
+                     200             None              Successful
+
+                     ***Plus Additional Status codes as per 5
+
+
+
+Response                   200 Response (Successful):
+payload
+                           Error Response:
+                           {
+                             "errors":[
+                                {
+
+
+
+
+    T
+                                  "rcoId":10515,
+                                  "code":"10515",
+                                  "message":"Maximum Amount cannot be less than Installment Amount",
+                                  "detail":""
+                                }
+  AF                         ],
+                             "status":400,
+                             "summary":"Transaction Failed"
+                           }
+
+
+
+
+6.2​Request Final Fate for Mandate Load
+ R
+Location            https://<host>/api/coswitchuadsrest/v3/mandates/finalfate
+
+Purpose             This will let you know if the EnDO mandate was loaded successfully or not.
+
+Method              Final Fate
+D
+
+Verb                POST
+
+Parameter
+                     Name                   Type         Data type                          Comment
+
+
+
+
+Payload
+                     Name                   Type         Data type                          Comment
+
+                     Final Fate             raw          mandatefinalfaterequest            Structure of Mandate Final
+                     Request                                                                Fate Request
+
+
+                           {
+
+                                                   Collexia Regno :2016/0422
+                                                        Beyond Collections
+  Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                    Website: www.collexia.co
+                               "contractReference":"2A903943000020",
+                               "merchantGid":10896,
+                               "frontEndUserName":"devTest",
+                               "remoteGid":27
+                          }​
+
+
+Response
+                    Status          Return type       Comment
+
+                    200              None             Successful
+
+                                    mandatefina       Structure of Request Final Fate Response
+                                    lfaterespons
+                                    e
+
+                    ***Plus Additional Status codes as per 5
+
+
+
+
+    T
+Response                  200 - Successful
+payload                   {
+                            "mandateLoaded":true,
+                            "mandateLoadedResponseCode":"00",
+                            "authorizationOutstanding":2,
+  AF                      }
+
+                          Error Response
+                          {
+                            "errors":[
+                               {
+                                 "rcoId":10601,
+                                 "code":"10601",
+                                 "message":"Account not Open, no Mandate registered",
+                                 "detail":""
+                               }
+ R
+                            ],
+                            "status":400,
+                            "summary":"Transaction Failed"
+                          }
+D
+
+6.3​Mandate Enquiry
+
+Location           https://<host>/api/coswitchuadsrest/v3/mandates/batch/mandateenquiry
+
+Purpose            This will return all the details of the mandate you are enquiring about.
+
+Method             Mandate Enquiry
+
+Verb               POST
+
+Parameter
+                    Name                    Type        Data type                          Comment
+
+
+
+
+                                                  Collexia Regno :2016/0422
+                                                       Beyond Collections
+ Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                   Website: www.collexia.co
+Payload
+                    Name                    Type        Data type                          Comment
+
+                    Mandate                 raw         mandateenquiryrequest              Structure Of Mandate
+                    Enquiry Request                                                        Enquiry Request
+
+
+                          {
+                              "merchantGid":17991
+                              "contractReference":"4647MOR0000166",
+                              "debtorAccountNumber":"",
+                              "frequencyCode":4,
+                              "magId":46,
+                              "fromDate":"",
+                              "toDate":"",
+                              "remoteGid":27
+                          }
+
+
+
+
+    T
+Response
+                    Status          Return type         Comment
+
+                    200              None               Successful
+  AF                                mandateenqu         Structure of Mandate Enquiry Response
+                                    iryresponse
+
+                    ***Plus Additional Status codes as per 5
+
+
+
+
+Response                  200 - Successful
+payload                   {
+ R
+                            "mandate":[
+                              {
+                                "clientNo":"APITEST01",
+                                "debtorAccountName":"Morne",
+                                "debtorIdentificationType":"I",
+                                "debtorIdentificationNo":"6506255020083",
+D
+
+                                "debtorAccountNumber":"1677724964",
+                                "debtorAccountType":1,
+                                “debtorBanId” : 64,
+                                "magId":46,
+                                "contractReference":"4647MOR0000166",
+                                "userReference":"APITEST01",
+                                "frequencyCode":4,
+                                "firstInstallmentDate":"20231025",
+                                "dayOfMonthRule":25,
+                                "noOfInstallments":1,
+                                "initialAmount":202.50,
+                                "firstCollectionDate":"20231025",
+                                "originalInstallmentAmount":202.50,
+                                "collectionDay":25,
+                                "creationDate":"20231012",
+                                "creationTime":"120830",
+                                "status":2,
+                                "userName":"devTest",
+
+                                                  Collexia Regno :2016/0422
+                                                       Beyond Collections
+ Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                   Website: www.collexia.co
+                                      "installments":[
+                                        {
+                                          "intId":171738,
+                                          "noOfInstallment":1,
+                                          "status":1,
+                                          "trackingDate":"20231025",
+                                          "scheduledDate":"20231025",
+                                          "installmentAmount":202.50,
+                                          "paymentDate":"20240712",
+                                          "paymentAmount":202.50,
+                                          "numberOfTrackingDays":5,
+                                        }
+                                      ]
+                                  }
+                              ]
+                          }
+
+                          Error Response
+                          {
+                            "errors":[
+
+
+
+
+    T
+                               {
+                                 "rcoId":10500,
+                                 "code":"10500",
+                                 "message":"Original Contract Reference could not be found",
+                                 "detail":""
+  AF                        ],
+                               }
+
+                            "status":400,
+                            "summary":"Transaction Failed"
+                          }
+
+
+
+
+6.4​Cancel of Mandate
+ R
+
+Location           https://<host>/api/coswitchuadsrest/v3/mandates/cancel
+
+Purpose            This will completely cancel the EnDO mandate and all its installments
+D
+
+Method             Cancel Mandate
+
+Verb               POST
+
+Parameter
+                    Name                     Type       Data type                          Comment
+
+
+
+
+Payload
+                    Name                     Type       Data type                          Comment
+
+
+
+
+                                                  Collexia Regno :2016/0422
+                                                       Beyond Collections
+ Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                   Website: www.collexia.co
+                     Cancel Mandate          raw         cancelmandaterequest               Structure Of Cancel
+                     Request                                                                Mandate Request
+
+
+                           {
+                               "contractReference":"4647SAM0000166",
+                               "frontEndUserName":"devTest",
+                               "remoteGid":27,
+                               "merchantGid":11262
+                           }
+
+
+Response
+                     Status          Return type       Comment
+
+                     200              None             Successful
+
+                                     cancelmand        Structure of Cancel Mandate Response
+                                     ateresponse
+
+
+
+
+    T
+                     ***Plus Additional Status codes as per 5
+
+
+
+Response                   200 - Successful
+  AF
+payload                    {
+                             "systemTraceAuditNo":"00011683063484"
+                           }
+
+                           Error Response
+                           {
+                             "errors":[
+                                {
+                                  "rcoId":10500,
+                                  "code":"10500",
+                                  "message":"Original Contract Reference could not be found",
+ R
+                                  "detail":""
+                                }
+                             ],
+                             "status":400,
+                             "summary":"Transaction Failed"
+                           }
+D
+
+
+7.​ Installments
+
+7.1​Installment Request
+
+Location            https://<host>/api/coswitchuadsrest/v3/installments/batch/installment
+
+Purpose             This operation is used to get the details of the mandate you want to reschedule
+                    and must be done before using the Update in 7.2 below.
+
+Method              Installment Request
+
+                                                   Collexia Regno :2016/0422
+                                                        Beyond Collections
+  Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                    Website: www.collexia.co
+Verb               POST
+
+Parameter
+                    Name                    Type        Data type                          Comment
+
+
+
+
+                    Name                    Type        Data type                          Comment
+Payload
+                    Installment             raw         installmentrequest                 Structure Of Installment
+                    Request                                                                Request
+
+
+                          {
+                              "merchantGid":17809,
+                              "contractReference":"45910001154714",
+                              "remoteGid":27
+
+
+
+
+    T
+  AF                      }
+
+
+
+
+Response            Status          Return type       Comment
+
+                    200              None             Successful
+
+                                    installmentre     Structure of Installment Response
+                                    sponse
+
+                    ***Plus Additional Status codes as per 5
+ R
+D
+
+
+
+                                                  Collexia Regno :2016/0422
+                                                       Beyond Collections
+ Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                   Website: www.collexia.co
+Response                   200 - Successful
+payload
+                           {
+                               "contractReference":"45910001154714",
+                               "clientNo":"API ONUS",
+                               "userReference":"4647MOR0000157/APIONUS/Debi/1",
+                               "installments":[
+                                 {
+                                    "intId":170749,
+                                    "status":1,
+                                    "statementReference":"4647MOR0000157/1",
+                                    "frequencyCode":1,
+                                    "firstPayDate":"20231026",
+                                    "trackingDate":"20231027",
+                                    "scheduledDate":"20231027",
+                                    "numberOfTrackingDays":4,
+                                    "installmentAmount":202.50,
+                                    "initialAmount":202.50,
+                                    "firstCollectionDate":"20231025",
+                                    "installmentNo":1,
+
+
+
+
+    T
+                                    "collectionDay":26,
+                                    "paymentDate":"",
+                                    "paymentAmount":0.00,
+                                    "creationDate":"20231010",
+                                    "creationTime":"142539"
+                                 }
+  AF                       }
+                               ]
+
+
+
+                           Error Response
+                           {
+                             "errors":[
+                                {
+                                  "rcoId":10562,
+                                  "code":"10562",
+                                  "message":"Mandate Not Found",
+ R
+                                  "detail":""
+                                }
+                             ],
+                             "status":400,
+                             "summary":"Transaction Failed"
+                           }
+D
+
+
+7.2​Update Installment
+
+
+Location            https://<host>/api/coswitchuadsrest/v3/installments/batch/update
+
+Purpose             This will send the actual reschedule instruction once you have received the INTID
+                    from the Request in 7.1
+
+Method              Update Installment
+
+Verb                POST
+
+Parameter
+                                                   Collexia Regno :2016/0422
+                                                        Beyond Collections
+  Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                    Website: www.collexia.co
+                    Name                     Type       Data type                          Comment
+
+
+
+
+Payload
+                    Name                     Type       Data type                          Comment
+
+                    Update                   raw        updateinstallmentrequest           Structure of the Update
+                    Installment                                                            Installment Request
+                    Request
+
+
+
+                          {
+                              "messageInfo":{
+                                 "merchantGid":17809,
+                                 "remoteGid":27,
+                                 "messageDate":"20230927",
+
+
+
+
+    T
+                                 "messageTime":"102136",
+                                 "systemUserName":"apiuser",
+                                 "frontEndUserName":"devTest"
+                              },
+                              "installment":[
+  AF                             {
+                                    "intId":1704749,
+                                    "trackingDate":"20231027",
+                                    "scheduledDate":"20231027",
+                                    "numberOfTrackingDays":5,
+                                    "installmentAmount":2000.50,
+                                    "collectionDay":26,
+
+                                  }
+                              ]
+                          }
+ R
+Response
+                    Status            Return type     Comment
+
+                    200               None            Successful
+D
+
+                    ***Plus Additional Status codes as per 5
+
+
+
+
+Response                  200 - Successful
+payload
+                          Error Response
+                          {
+                            "errors":[
+                              {
+                                "rcoId":10546,
+                                "code":"10546",
+                                "message":"MDA Not Found, Amendment can not be created",
+                                "detail":""
+
+                                                  Collexia Regno :2016/0422
+                                                       Beyond Collections
+ Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                   Website: www.collexia.co
+                                   }
+                                ],
+                                "status":400,
+                                "summary":"Transaction Failed"
+                           }
+
+
+
+
+7.3​Cancel Installment using Contract Reference And Installment No
+
+
+Location            https://<host>/api/coswitchuadsrest/v3/installments/cancel
+
+Purpose             Cancel an Installment with Contract Reference and Installment No
+
+Method              Cancel installment
+
+Verb                POST
+
+
+
+
+    T
+Parameter
+                     Name                    Type        Data type                          Comment
+  AF
+Payload
+                     Name                    Type        Data type                          Comment
+
+                     Cancel                  raw         cancelinstallmentrequest           Structure Of Cancel
+                     Installment                                                            Installment Request
+                     Request
+ R
+                            {
+                                "contractReference":"45910001154714",
+                                "installmentNo":1,
+                                "action":"C",
+                                "frontEndUserName":"devTest",
+                                "remoteGid":27,
+D
+
+                                "merchantGid":17809
+                            }
+
+
+Payload
+                     Status          Return type        Comment
+
+                     200              None              Successful
+
+                                     cancelInstall      Structure of Cancel Installment Response
+                                     mentrespon
+                                     se
+
+                     ***Plus Additional Status codes as per 5.3
+
+
+
+
+                                                   Collexia Regno :2016/0422
+                                                        Beyond Collections
+  Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                    Website: www.collexia.co
+Response               200 - Successful
+
+                           Error Response
+                           {
+                             "errors":[
+                                {
+                                  "rcoId":10500,
+                                  "code":"10500",
+                                  "message":"Original Contract Reference could not be found",
+                                  "detail":""
+                                }
+                             ],
+                             "status":400,
+                             "summary":"Transaction Failed"
+                           }
+
+
+
+
+7.4​Request for Download of Payments
+
+
+
+
+    T
+Location           https://<host>/api/coswitchuadsrest/v3/paymenthistory/download
+  AF
+Purpose            This will download all payment responses received from the banks for the GID
+                   specified.
+
+Method             Download Payments
+
+Verb               POST
+
+Parameter
+                    Name                    Type        Data type                          Comment
+ R
+
+Parameters
+                    Name                    Type        Data type                          Comment
+D
+
+                    Download                raw         download payment                   Structure Of Download
+                    Payments                            request                            Payments Request
+                    Request
+
+
+                           {
+                               "merchantGid":17809,
+                               "frontEndUserName":"devTest",
+                               "remoteGid":27
+                           }
+
+
+Response
+                    Status          Return type        Comment
+
+                    200              None              Successful
+
+
+                                                  Collexia Regno :2016/0422
+                                                       Beyond Collections
+ Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                   Website: www.collexia.co
+                                    downloadpa         Structure of Download Payment Response
+                                    ymentsresp
+                                    onse
+
+                    ***Plus Additional Status codes as per 5
+
+
+
+
+Response                   200 - Successful
+payload
+                           {
+                               "merchantGid":17809,
+                               "noOfResponses":1,
+                               "responses":[
+                                 {
+                                   "magID":46,
+                                   "clientNo":"1",
+
+
+
+
+    T
+                                   "userReference":"103456A",
+                                   "debtorAccountNumber":"61118300974",
+                                   "clientInitials":"",
+                                   "clientSurname":"",
+                                   "clientId":"8510135345080",
+  AF                               "statementRef":"QATEST 45910000000053231011",
+                                   "mandateStatus":2,
+                                   "magDescription":"EnDO",
+                                   "paymentDate":"20231011",
+                                   "paymentAmount":1000.50,
+                                    "previousID":0,
+                                   "batchNumber":1942,
+                                   "id":5726,
+                                   "trackingDate":"20231011",
+                                   "contractReference":"46470000000053",
+                                   "installmentNo":1,
+ R
+                                   "merchantStatementReference":"45910000000053/1/1/1",
+                                   "payerStatementReference":"QATEST 45910000000053231011",
+                                   "responseCode":"0",
+                                 }
+                               ]
+                           }
+D
+
+                           Error Response
+                           {
+                             "errors":[
+                                {
+                                  "rcoId":10500,
+                                  "code":"10500",
+                                  "message":"Original Contract Reference could not be found",
+                                  "detail":""
+                                }
+                             ],
+                             "status":400,
+                             "summary":"Transaction Failed"
+                           }
+
+
+
+
+                                                  Collexia Regno :2016/0422
+                                                       Beyond Collections
+ Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                   Website: www.collexia.co
+ Recommended Download Times:
+         06:00
+         10:00
+         15:00
+         20:00
+
+
+8.​ Error Handling
+   If the API is not Successful Status <> 200 or 204 , the API will respond with a json response Error
+
+
+    Example - Error
+                                         {
+                                              "errors":[
+                                                {
+                                                  "rcoId":10500,
+
+
+
+
+    T
+                                                  "code":"10500",
+                                                  "message":"Original Contract Reference could not be found",
+                                                  "detail":""
+                                                }
+  AF                                         ],
+                                             "status":400,
+                                             "summary":"Transaction Failed"
+                                         }
+
+
+9.​ Structures​
+ R
+9.1​Load Mandate Request
+
+ Name                          Type                Flag          Pattern           Comment
+
+ messageInfo                   messageinfo         R                               List of Message Info
+D
+
+ mandate                       mandate             R                               List of Debtor Details
+
+
+
+9.2​Message Info
+
+ Name                          Type                Flag          Pattern           Comment
+
+ merchantGid                   integer             R       N5                      The Merchant’s GID provided by
+                                                                                   Collexia
+
+ remoteGid                     integer             R       N2                      System ID
+
+ messageDate                   string(8)           R       YYYYMMDD                Date the message was sent
+
+ messageTime                   string(6)           R       HHMMSS                  Time the message was sent
+
+                                                  Collexia Regno :2016/0422
+                                                       Beyond Collections
+ Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                   Website: www.collexia.co
+ systemUserName                string(30)         C        Characters a-z,         Your integration username that will be
+                                                           A-Z                     supplied to you, this will always be the
+                                                                                   same
+
+ frontEndUserName              string(30)         C        Characters a-z,         This is the username of the user on
+                                                           A-Z                     your system that is loading the
+                                                                                   mandate.
+
+
+
+9.3​Mandate
+
+ Name                          Type               Flag           Pattern           Comment
+
+ clientNo                      string(15)         O        Characters a-z,         Alphanumeric number for your client
+                                                           A-Z, 0-9 and
+                                                           space up to 15
+                                                           characters.
+
+ userReference                 string(10)         R        Characters a-z,         Alphanumeric reference for the
+                                                           A-Z, 0-9 and            mandate.
+
+
+
+
+    T
+                                                           space up to 10
+                                                           characters.
+
+ frequencyCode                 integer            R        N1                      Code for the frequency
+                                                                                   1-Weekly,3-Fortnightly,4-Monthly
+  AF
+ installmentAmount             numeric(12)        R        N12                     Installment amount in N$
+                                                                                   (Not in cents)
+
+
+ noOfInstallments              integer            R        N3                      Number of installments
+
+ origin                        integer            R        N2                      origin will be supplied by Softsplice.
+
+ contractReference             string(14)         R        Characters a-z,         First 4 characters will be the Merchant’s
+                                                           A-Z and 0-9 up to       GID in HEX.
+                                                           14 characters.          Next 4 character is the calculated base
+ R
+                                                                                   date
+                                                                                   Last 6 characters is the teller for the
+                                                                                   day
+                                                                                   Must be Unique
+
+ magId                         integer            R        N2                      46 - EnDO
+D
+
+ initialAmount                 numeric(12)        O        N12                     The amount you want to collect on your
+                                                                                   first installment.(Will override the
+                                                                                   installmentAmount for the 1st
+                                                                                   installment)
+
+                                                                                   Only to be used when you want to
+                                                                                   collect a greater amount than the
+                                                                                   installmentAmount.
+
+                                                                                   Leave 0 if not used.
+
+ firstCollectionDate           string(8)          C        YYYYMMDD                The first installment date
+
+ collectionDay                 integer            R        N2                      Day of the Month/Week you want to
+                                                                                   collect
+                                                                                   Weekly
+                                                                                   —-------------
+                                                                                   01 - Monday
+                                                                                   02 - Tuesday
+                                                                                   03 - Wednesday
+                                                  Collexia Regno :2016/0422
+                                                       Beyond Collections
+ Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                   Website: www.collexia.co
+                                                                                   04 - Thursday
+                                                                                   05 - Friday
+                                                                                   06 - Saturday
+                                                                                   07 - Sunday
+
+                                                                                   Fortnightly
+                                                                                   —------------------
+                                                                                   01 Monday to 07 Sunday of 1st week
+                                                                                   08 Monday to 14 Sunday of 2nd week
+
+                                                                                   Monthly
+                                                                                   —-------------
+                                                                                   1-30
+                                                                                   31/99 = Last day of the month
+
+ numberOfTrackingDays          integer            R        N2                      No of Tracking days 1-14
+
+ debtorAccountName             string(35)         R        Characters a-z,         Name of Debtor
+                                                           A-Z and 0-9 up to
+                                                           35 characters.
+
+ debtorIdentificationType      integer            R        N1                      Identification type of the Debtor.
+
+
+
+
+    T
+                                                                                   1 - Namibian ID
+                                                                                   2 - Passport
+                                                                                   3 - Temp ID
+                                                                                   4- Business
+  AF
+ debtorIdentificationNo        string(33)         R        Characters a-z,
+                                                           A-Z and 0-9 up to
+                                                                                   Identification number of Debtor.
+
+                                                           33 characters.
+
+ debtorAccountNumber           string(19)         R        N19                     Account number of the Debtor
+
+ debtorAccountType             integer            R        N1                      Account type of the Debtor account.
+
+                                                                                   1 - Current
+                                                                                   2 - Savings
+                                                                                   3 - Transmission
+ R
+ debtorBanId                   integer            R        N2                      Bank Record Number
+                                                                                   List in Appendix
+
+
+
+9.4​Mandate Final Fate Request
+D
+
+ Name                          Type               Flag           Pattern           Comment
+
+ contractReference             string(14)         R        Characters a-z,         Contract reference of the mandate you
+                                                           A-Z and 0-9 up to       want the final response of
+                                                           14 characters.
+
+ merchantGid                   integer            R        N5                      The Merchant’s GID provided by
+                                                                                   Collexia
+
+ frontEndUserName              string(30)         R        Characters a-z,         Username of the user on the system
+                                                           A-Z and 0-9 up to       that is requesting the information
+                                                           30 characters.
+
+ remoteGid                     integer            R        N2                      System ID
+
+
+
+
+                                                  Collexia Regno :2016/0422
+                                                       Beyond Collections
+ Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                   Website: www.collexia.co
+9.5​Mandate Final Fate Response
+
+ Name                          Type               Flag           Pattern           Comment
+
+ mandateLoaded                 boolean            R        true, false             Indicates whether the EnDO was
+                                                                                   authorised or not.
+
+ mandateLoadedRespons          string(6)          R        N6                      Response Code
+ eCode
+
+ authorizationOutstanding      integer            R        N1                      1-Y, 2-N
+
+
+
+
+9.6​Mandate Enquiry Request
+
+
+
+
+    T
+ Name                          Type               Flag           Pattern           Comment
+
+ merchantGid                   integer            R        N5                      The Merchant’s GID provided by
+                                                                                   Collexia.
+  AF
+ contractReference             string(14)         C        Characters a-z,         Contract reference of the mandate you
+                                                           A-Z and 0-9 up to       want the information of
+                                                           14 characters.
+
+ debtorAccountNumber           string(11)         C        N11                     The Debtor AccountNumber
+
+ frequencyCode                 integer            C        N1                      Code for the frequency
+                                                                                   1-Weekly,3-Fortnightly,4-Monthly
+
+ magId                         integer            C        N2                      46 - EnDO
+ R
+ fromDate                      string(8)          C        YYYYMMDD                Creation date From (Start)
+
+ toDate                        string(8)          C        YYYYMMDD                Creation date To (End)
+
+ remoteGid                     integer            R        N2                      System ID
+D
+
+9.7​Mandate Enquiry Response
+
+ Name                          Type               Flag           Pattern           Comment
+
+ mandate                       mandate            R                                List of Mandate details
+
+
+
+9.8​Mandate
+
+ Name                          Type               Flag           Pattern           Comment
+
+ clientNo                      string(15)         R        Characters a-z,         Alphanumeric number for the Debtor
+                                                           A-Z, 0-9 and
+                                                           space up to 15
+
+                                                  Collexia Regno :2016/0422
+                                                       Beyond Collections
+ Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                   Website: www.collexia.co
+                                                          characters.
+
+debtorAccountName             string(35)         C        Characters a-z,         Name of Debtor
+                                                          A-Z and 0-9 up to
+                                                          35 characters.
+
+debtorIdentificationType      integer            C        N1                      Identification type of debtor.
+
+                                                                                  1 - Namibian ID
+                                                                                  2 - Passport
+                                                                                  3- Temp ID
+                                                                                  4 - Business
+
+debtorIdentificationNo        string(33)         C        Characters a-z,         Identification number of debtor.
+                                                          A-Z and 0-9 up to
+                                                          33 characters.
+
+debtorAccountNumber           string(20)         R        Characters 0-9 up       Account number of the debtor
+                                                          to 20 characters.
+
+debtorAccountType             integer            C        N1                      1-Current
+                                                                                  2-Savings
+
+
+
+
+    T
+                                                                                  3-Transmission
+
+debtorBanID                   integer            R        N2                      Bank Record Number
+                                                                                  List in Appendix
+
+magId                         integer            R        N2                      46 - EnDo
+  AF
+contractReference             string(14)         R        Characters a-z,         14 Character unique number for the
+                                                          A-Z and 0-9 up to       mandate.
+                                                          14 characters.
+
+userReference                 string(15)         R        Characters a-z,         Alphanumeric reference for your client
+                                                          A-Z, 0-9 and
+                                                          space up to 15
+                                                          characters.
+
+frequencyCode                 integer            R        N1                      Code for the frequency
+                                                                                  1-Weekly,3-Fortnightly,4-Monthly
+ R
+firstInstallmentDate          string(8)          C        YYYYMMDD                The first installment date
+
+dayOfMonthRule                integer            C        N2                      Day of the Month/Week you are
+                                                                                  collecting on.
+D
+
+noOfInstallments              integer            R        N3                      Total number of installments for the
+                                                                                  mandate.
+
+initialAmount                 numeric(12)        O        N12                     The initial amount that was used on
+                                                                                  registration of the mandate. If 0 was
+                                                                                  sent, this will return with the same value
+                                                                                  as the installment amount.
+
+firstCollectionDate           string(8)          O        YYYYMMDD                The first installment date
+
+originalInstallmentAmoun      numeric(12)        R        N12                     Installment amount
+t
+
+collectionDay                 integer            R        N2                      Day of the Month/Week you are
+                                                                                  collecting on.
+
+creationDate                  string(8)          R        YYYYMMDD                Date the message was sent
+
+creationTime                  string(6)          R        HHMMSS                  Time the message was sent
+
+
+                                                 Collexia Regno :2016/0422
+                                                      Beyond Collections
+Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                  Website: www.collexia.co
+ status                         integer            R        N1                      Status of the EnDO on the database.
+
+                                                                                    1 - Data Error
+                                                                                    2 - Active
+                                                                                    3 - Completed
+                                                                                    4 - Cancelled
+                                                                                    5 - Suspended
+                                                                                    6 - CancelInProgress
+                                                                                    7 - SuspendedInProcess
+                                                                                    8 - Manually Processed
+
+
+ userName                       string(30)         R        Characters a-z,         Username of the person that loaded the
+                                                            A-Z and 0-9 up to       AC originally.
+                                                            30 characters.
+
+ installments                   installments       R                                List of installment details
+
+
+
+9.9​Installments
+
+
+
+
+    T
+ Name                           Type               Flag           Pattern           Comment
+
+ intId                          integer            R        N20                     Installment ID on the database
+  AF
+ noOfInstallment                integer            C        N3                      Installment No (current)
+
+ status                         integer            R        N2                      Status of the installment on the
+                                                                                    database.
+
+                                                                                    1 - Active
+                                                                                    2 - Cancelled
+                                                                                    3 - Insufficient Funds
+                                                                                    4 - Send For Payment
+                                                                                    5 - In Tracking
+                                                                                    6 - Completed
+                                                                                    7 - Recalled
+ R
+                                                                                    8 - Rejected
+                                                                                    9 - Suspended
+                                                                                    10 - Disputed
+                                                                                    11 - Expired
+                                                                                    12 - Migrated
+                                                                                    13 - Manually Processed
+                                                                                    14 - Validated
+D
+
+                                                                                    15 - Not Validated
+                                                                                    16 - Submitted
+                                                                                    17 - Blocked
+                                                                                    18 - Partially Completed
+
+ trackingDate                   string(8)          R        YYYYMMDD                Date the installment will start tracking.
+
+ scheduledDate                  string(8)          R        YYYYMMDD                Date the installment is scheduled for.
+
+ installmentAmount              numeric(12)        R        N12                     Installment amount
+
+ paymentDate                    string(8)          R        YYYYMMDD                Date payment was received for
+                                                                                    installment.
+
+ paymentAmount                  numeric(12)        R        N12                     Payment amount
+
+ numberOfTrackingDays           integer            R        N2                      No of Tracking days
+
+ statementReference             string(140)        C        Characters a-z,         Statement Reference to be displayed
+
+                                                   Collexia Regno :2016/0422
+                                                        Beyond Collections
+  Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                    Website: www.collexia.co
+                                                           A-Z, 0-9, space,        on the Payer Statement
+                                                           and any of the
+                                                           below characters
+                                                           up to a length of
+                                                           140 characters
+                                                           ~`!@#$%^&*()_+=
+                                                           ';":><.,?/\|
+
+ frequencyCode                 integer            C        N1                      Frequency Code of the AC.
+
+ firstPayDate                  string(8)          C        YYYYMMDD                The first installment date
+
+ installmentAmount             numeric(12)        R        N12                     Installment amount
+
+ initialAmount                 numeric(12)        C        N12                     The initial amount that was used on
+                                                                                   registration of the mandate. If 0 was
+                                                                                   sent, this will return with the same value
+                                                                                   as the installment amount.
+
+ firstCollectionDate           string(8)          C        YYYYMMDD                The first installment date
+
+
+
+
+    T
+ installmentNo                 integer            C        N3                      Installment No
+
+ collectionDay                 integer            C        N2                      Day of the Month/Week you are
+                                                                                   collecting on.
+
+ creationDate                  string(8)          C        YYYYMMDD                Date the message was sent
+  AF
+ creationTime                  string(6)          C        HHMMSS                  Time the message was sent
+
+
+
+9.10​ Cancel Mandate Request
+
+ Name                          Type               Flag           Pattern           Comment
+
+ contractReference             string(14)         R        Characters a-z,         Contract reference of the mandate you
+ R
+                                                           A-Z and 0-9 up to       want to cancel.
+                                                           14 characters.
+
+ frontEndUserName              string(30)         R        Characters a-z,         Username of the user on the system
+                                                           A-Z and 0-9 up to       that is requesting the cancellation.
+                                                           30 characters.
+D
+
+ remoteGid                     integer            R        N2                      System ID
+
+ merchantGid                   integer            R        N5                      The Merchant’s GID provided by
+                                                                                   Collexia
+
+
+
+9.11​ Cancel Mandate Response
+
+ Name                          Type               Flag           Pattern           Comment
+
+ systemTraceAuditNo            string(20)         R        Characters a-z,         System Trace number for Cancel
+                                                           A-Z and 0-9 up to       Request
+                                                           20 characters.
+
+
+
+
+                                                  Collexia Regno :2016/0422
+                                                       Beyond Collections
+ Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                   Website: www.collexia.co
+9.12​ Installment Request
+
+ Name                           Type               Flag           Pattern           Comment
+
+ merchantGid                    string(5)          R        N5                      The Merchant’s GID provided by
+                                                                                    Collexia
+
+ contractReference              string(14)         R        Characters a-z,         Contract reference of the mandate you
+                                                            A-Z and 0-9 up to       want to reschedule.
+                                                            14 characters.
+
+ remoteGid                      integer            R        N2                      System ID
+
+
+
+9.13​ Installment Response
+
+
+
+
+    T
+ Name                           Type               Flag           Pattern           Comment
+  AF
+ contractReference              string(14)         R        Characters a-z,
+                                                            A-Z and 0-9 up to
+                                                                                    First 4 characters will be the Merchant’s
+                                                                                    GID in HEX.
+                                                            14 characters.
+                                                                                    The following 10 characters you can
+                                                                                    generate from your system as long as it
+                                                                                    is unique for every mandate.
+
+ clientNo                       string(15)         R        Characters a-z,         Alphanumeric number for the client
+                                                            A-Z, 0-9 and
+                                                            space up to 15
+                                                            characters.
+ R
+ userReference                  string(15)         R        Characters a-z,         Alphanumeric reference for the
+                                                            A-Z, 0-9 and            mandate
+                                                            space up to 15
+                                                            characters.
+
+ installments                   Instalments        R                                List of installment/s details.
+D
+
+9.14​ Update Installment Request
+
+ Name                           Type               Flag           Pattern           Comment
+
+ messageInfo                    messageinfo        R        N10                     List of Message Info
+
+ installment                    installment        R                                List of installment/s details.
+
+
+
+9.15​ Installment
+
+ Name                           Type               Flag           Pattern           Comment
+
+
+
+                                                   Collexia Regno :2016/0422
+                                                        Beyond Collections
+  Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                    Website: www.collexia.co
+ intId                         integer            R        N20                     Installment ID on the database
+
+ trackingDate                  string(8)          C        YYYYMMDD                The first installment date.
+
+ scheduledDate                 string(8)          C        YYYYMMDD                Date the installment is scheduled for.
+
+ numberOfTrackingDays          integer            C        N2                      No of Tracking days
+
+ installmentAmount             string(12)         C        N12                     Installment amount
+
+ collectionDay                 integer            C        N2                      Day of the Month/Week you are
+                                                                                   collecting on.
+
+
+
+
+9.16​ Cancel Installment Request
+
+ Name                          Type               Flag           Pattern           Comment
+
+
+
+
+    T
+ contractReference             string(14)         R        Characters a-z,         Contract Reference of the installment
+                                                           A-Z and 0-9 up to       you are rescheduling.
+                                                           14 characters.
+
+ installmentNo                 integer            R        N3                      Installment number you want to cancel
+  AF
+ action                        string(1)          R        Characters A-Z up       C - Cancel
+                                                           to 1 character.
+
+ frontEndUserName              string(30)         R        Characters a-z,         Username of the user on the system
+                                                           A-Z and 0-9 up to       that is requesting the cancellation.
+                                                           30 characters.
+
+ remoteGid                     integer            R        N2                      System ID
+
+ merchantGid                   integer            R        N5                      The Merchant’s GID provided by
+                                                                                   Collexia.
+ R
+9.17​ Cancel Installment Response
+D
+
+ Name                          Type               Flag           Pattern           Comment
+
+ systemTraceAuditNo            string(20)         R        Characters a-z,         System Trace number for Cancel
+                                                           A-Z and 0-9 up to       Request
+                                                           20 characters.
+
+
+
+9.18​ Download Payments Request
+
+ Name                          Type               Flag           Pattern           Comment
+
+ merchantGid                   integer            R        N5                      The Merchant’s GID provided by
+                                                                                   Collexia.
+
+
+
+
+                                                  Collexia Regno :2016/0422
+                                                       Beyond Collections
+ Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                   Website: www.collexia.co
+ frontEndUserName               string(30)         R        Characters a-z,         This will be the System Username that
+                                                            A-Z and 0-9 up to       was provided to you by Softsplice.
+                                                            30 characters.
+
+ remoteGid                      integer            R        N2                      System ID
+
+
+
+9.19​ Download Payments Response
+
+ Name                           Type               Flag           Pattern           Comment
+
+ merchantGid                    integer            R        N5                      The Merchant’s GID provided by
+                                                                                    Collexia.
+
+ noOfResponses                  integer            R        N5                      Number of responses sent in download.
+
+ responses                      responses          R                                List of collection responses details.
+
+
+
+
+    T
+9.20​ Responses
+
+ Name                           Type               Flag           Pattern           Comment
+  AF
+ magId                          integer            R        N2                      46 -EnDO
+
+ clientNo                       string(15)         R        Characters a-z,         Alphanumeric number for the client.
+                                                            A-Z, 0-9 and
+                                                            space up to 15
+                                                            characters.
+
+ userReference                  string(15)         R        Characters a-z,         Alphanumeric reference for the
+                                                            A-Z, 0-9 and            mandate.
+                                                            space up to 15
+                                                            characters.
+ R
+ debtorAccountNumber            string(20)         R        Characters a-z,         Account number of the Debtor.
+                                                            A-Z and 0-9 up to
+                                                            20 characters.
+
+ clientInitials                 string(10)         C        Characters A-Z up       Initials of the client.
+                                                            to 10 characters.
+D
+
+ clientSurname                  string(30)         C        Characters a-z          Surname of the client
+                                                            and A-Z up to 30
+                                                            characters.
+
+ clientId                       string(33)         C        Characters a-z,         Identification number of the client.
+                                                            A-Z and 0-9 up to
+                                                            33 characters.
+
+ statementRef                   string(140)        R        Characters a-z,         Statement Reference to be displayed
+                                                            A-Z, 0-9, space,        on the Payer Statement
+                                                            and any of the
+                                                            below characters
+                                                            up to a length of
+                                                            140 characters
+                                                            ~`!@#$%^&*()_+=
+                                                            ';":><.,?/\|
+
+ mandateStatus                  integer            R        N1                      Status of the EnDO mandate on the
+                                                                                    database.
+
+                                                   Collexia Regno :2016/0422
+                                                        Beyond Collections
+  Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                    Website: www.collexia.co
+                                                                                   1 - Other
+                                                                                   2 - Active
+                                                                                   3 - Completed
+                                                                                   4 - Cancelled
+                                                                                   5 - Suspended
+
+ magDescription                string(9)          C        Characters a-z          Description of magId
+                                                           and A-Z up to 9
+                                                           characters.
+
+ paymentDate                   string(8)          R        YYYYMMDD                Date payment was received for
+                                                                                   installment.
+
+
+
+ paymentAmount                 numeric(12)        R        N12                     Payment amount
+
+ localInstrRefGID              integer            C        Characters 0-9 up       System field: Origin of collection
+                                                           to 10 characters.       response transaction message (IOM)
+
+ localInstrRefNo               integer            C        Characters 0-9 up       System field: ID of collection response
+
+
+
+
+    T
+                                                           to 10 characters.       transaction message (IOM)
+
+ previousID                    integer            C        N4                      For batched downloads, usually = 0
+
+ batchNumber                   integer            C        N4                      For batched downloads, usually = 0
+  AF
+ id                            integer            R        N4                      System field: ID of collection/rejection
+                                                                                   history
+
+ trackingDate                  string(8)          C        YYYYMMDD                Date the installment started tracking.
+
+ contractReference             string(14)         R        Characters a-z,         14 Character unique number for the
+                                                           A-Z and 0-9 up to       mandate.
+                                                           14 characters.
+
+ installmentNo                 integer            R        N3                      Installment No
+ R
+ merchantStatementRefer        string(140)        R        Characters a-z,         Statement Reference to be displayed
+ ence                                                      A-Z, 0-9, space,        on the Merchant Statement
+                                                           and any of the
+                                                           below characters
+                                                           up to a length of
+                                                           140 characters
+                                                           ~`!@#$%^&*()_+=
+D
+
+                                                           ';":><.,?/\|
+
+ payerStatementReferenc        string(140)        R        Characters a-z,         Statement Reference to be displayed
+ e                                                         A-Z, 0-9, space,        on the Payer Statement
+                                                           and any of the
+                                                           below characters
+                                                           up to a length of
+                                                           140 characters
+                                                           ~`!@#$%^&*()_+=
+                                                           ';":><.,?/\|
+
+ responseCode                  string             R        N6                      Response Code As Per Appendix A
+
+
+
+9.21​ Error Response
+
+ Name                          Type               Flag           Pattern           Comment
+
+                                                  Collexia Regno :2016/0422
+                                                       Beyond Collections
+ Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                   Website: www.collexia.co
+ status                         string(8)          C        Status of Error         status
+
+ summary                        string(50)         C        Summary of Error        summary
+
+ errors                         errors             C        ErrorCodes              errors
+
+
+
+9.22​ Errors
+
+ Name                           Type               Flag           Pattern           Comment
+
+ rcoId                          integer            C        Error Code ID           Internal Reference
+
+ code                           string(8)          C        Error Code              code
+
+ message                        string(250)        C        Error Text              message
+
+ detail                         string(50)         C        Detail of the Error     detail
+
+
+
+
+    T
+  AF
+ R
+D
+
+
+
+                                                   Collexia Regno :2016/0422
+                                                        Beyond Collections
+  Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                    Website: www.collexia.co
+    Appendix A– Response Codes (Download Payments)
+
+
+             Response Code                  Description
+
+             0                              Transaction Successful
+
+             02                             Insufficient Funds (Rejected)
+
+             03                             Debits not allowed to this Account
+
+             06                             Account Frozen
+
+             12                             Account Closed
+
+             18                             Account holder deceased
+
+             30                             No authority to debit
+
+
+
+
+        T
+             40                             Item limit exceeded
+
+             44                             Unable to Process
+      AF     48                             Account no fails CDV routine
+
+             56                             Non Fica Compliant Account
+
+
+
+​    Appendix B - Error Codes (Registration/Cancellation/Amendment)
+
+             Error Code                    Description:
+     R
+             5000                          Bank number not found, incorrect
+
+             5645                          CDV Failure - Account Number issue
+
+             5646                          CDV Failure - Account Type issue
+    D
+
+             5647                          CDV Failure - General error (Account Number or Account Type
+                                           or Branch)
+
+             10500                         Original Contract Reference could not be found
+
+             10508                         Branch Code can not be changed
+
+             10509                         Frequency Code can not be changed
+
+             10514                         Frequency Code is a required field
+
+             10518                         Debtor Account Detail is required field
+
+             10534                         GlobalID not setup correct: CreditorShortName
+
+             10541                         Duplicate Contract Reference
+
+                                                     Collexia Regno :2016/0422
+                                                          Beyond Collections
+    Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                      Website: www.collexia.co
+         10543                         Duplicate UserReference or Internal Contract Reference
+
+         10545                         Original Mandate could not be found, cannot cancel
+
+         10546                         Original Mandate could not be found, cannot amend
+
+         10561                         Too many installments
+
+         10562                         Installment not Found
+
+         10563                         Incorrect contract reference length
+
+         10567                         Registration declined. Collection Date must be in the future
+
+         10568                         Update Declined. Collection Date must be in the future
+
+         10569                         Mandate amount limit exceeded
+
+         10570                         Installment amount limit exceeded
+
+
+
+
+    T
+         10578                         Transaction detail (IOM) not found
+
+         10582                         Service detail (SIC) not found
+
+         15159                         Selected Installments are not allowed to be updated with current
+  AF                                   status
+
+         901060                        Invalid Tracking Code
+​
+​Appendix C - Bank
+
+         BANRno (Bank                  Description:
+         ID)
+ R
+         64                            Bank Windhoek
+
+         65                            FNB Namibia
+
+         66                            TrustCo Bank
+D
+
+         67                            Bank Atlántico
+
+         68                            BankBIC
+
+         69                            Bank of Namibia
+
+         70                            Letshego Bank Namibia
+
+         71                            Nedbank Namibia
+
+         72                            Standard Bank Namibia
+
+
+
+
+                                                 Collexia Regno :2016/0422
+                                                      Beyond Collections
+Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                  Website: www.collexia.co
+​   Appendix D - Industry Response Codes (displayed on website)
+
+             Response Code                Description
+             00                           Successful
+
+             AB10                         Transaction not processed
+
+             AC02                         Debtor Account Number invalid or missing
+
+             AC03                         Creditor Account Number invalid or missing
+
+             AC05                         Debtor Account Number is not open or active
+
+             AC06                         Account is blocked
+
+             AC08                         Branch Code invalid or missing
+
+
+
+
+        T
+             AC12                         Account Type invalid or missing
+
+             AC13                         Debtor Account Type invalid or missing
+
+             AG08                         Client not registered for product / Invalid Access
+      AF     AM04                         Insufficient Funds (Unsuccessful Debit)
+
+             AM09                         Amount received is not the amount agreed/expected
+
+             AM10                         Invalid Control sum
+
+             AM11                         Transaction amount currency is invalid
+
+             AM12                         Transaction amount is invalid
+
+             AM13                         Transaction amount exceeds limits set by clearing system
+     R
+             AM14                         SLE Limit Exceeded
+
+             BE08                         Debtor Account Name is mandatory
+
+             BE09                         The Country code is invalid in the regulatory details
+    D
+
+             BE10                         Debtor Country Code is invalid
+
+             BE11                         Debtor Country Code is invalid
+
+             BE18                         Invalid contact details
+
+             BE22                         Creditor Account Name is mandatory
+
+             CH03                         Collection date is too far in the future
+
+             CH04                         Action Date is in the past
+             CL03                         Invalid reference or narrative
+
+             CURR                         Invalid batch currency
+
+             DT01                         The value date is invalid
+
+                                                     Collexia Regno :2016/0422
+                                                          Beyond Collections
+    Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                      Website: www.collexia.co
+         DT03                         Invalid non Bank processing date
+
+         DU01                         Duplicate message found
+
+         DU03                         Duplicate transaction
+
+         DU04                         Duplicate end-to-end
+
+         ED06                         Bank / System not available
+
+         FF01                         Technical validation failed
+
+         FF04                         Service Type is invalid
+
+         FF05                         Tracking period is invalid
+
+         FF06                         Entry class is invalid
+
+         FF08                         End-to-end ID is invalid
+
+         FF10                         The File or transactions cannot be processed due to technical issues
+
+
+
+
+    T
+                                     at the bank. Please contact the bank
+
+         IAAD                         Pending reason being investigated
+  AF     INV1                         Invalid Supplier
+
+         MD01                         Not FICA compliant
+
+         MD02                         Mandate reference is invalid
+
+         MD05                         Creditor should not have collected the direct debit
+
+         MD07                         Account holder deceased
+
+         NA01                         Resolution response exceeds SLA cut-off
+ R
+         NA04                         Payment stopped (by account holder)
+
+         NA28                         Recall / withdrawal
+
+         NA30​                        No authorization to debit
+D
+
+         NA32                         Debit in contravention of the authorized payer
+
+         NA34                         Authorization cancelled
+
+         NA36                         Previously stopped via Stop Payment Advice
+
+         NWIA                         Not what I agreed
+
+         RR01                         Incorrect Creditor Account Number
+
+         RR02                         Incorrect Debtor Account Number
+
+         RR03                         Closed Creditor Account Number
+
+         RR04                         Closed Debtor Account Number
+
+         RR05                         Blocked Creditor Account
+
+
+                                                 Collexia Regno :2016/0422
+                                                      Beyond Collections
+Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                  Website: www.collexia.co
+         RR06                         Blocked Debtor Account
+
+         RR07                         End Customer Deceased
+
+         RR08                         Incorrect Creditor Agent Account
+
+         RR09                         Incorrect Debtor Agent Account
+
+         RR11                         Incorrect Related Transaction Reference
+
+         RR12                         Unrecognized Initiating Party
+
+         RR13                         Regulatory Reason
+
+         RR14                         Not Allowed Payment (Credit)
+
+         RR15                         Not Allowed Payment (Debit)
+
+         RR16                         Refund Request By End Customer
+
+         RR17                         Response / Request received after Cut-off Time
+
+
+
+
+    T
+         SL13                         Maximum number of direct debit transactions exceeded
+
+         TM01                         Associated message was received after cut-off time
+  AF     TR52                         Returned amount exceeds original interbank settlement total
+
+         TR64                         Supplier not registered
+
+         TR66                         Debtor account CDV failed
+
+         TR74                         Cancellation request received
+
+         TR75                         Debit held in tracking
+
+         TR76                         Insufficient Funds (rejected)
+ R
+         TX01                         Incorrect Tax Reference Number supplied
+
+
+
+Appendix E– Mapping between Response Codes and Industry Codes
+D
+
+
+         Industry Code                       Response            Description
+                                             Code
+
+         ACCP                                0                   Transaction Successful
+
+         TR76 / AM04 / TR75E                 02                  Insufficient Funds (Rejected)
+
+         RR15 / RR14                         03                  Debits not allowed to this account
+
+
+         RR06                                06                  Account Frozen
+
+
+         RR03 / RR04                         12                  Account Closed
+
+
+                                                 Collexia Regno :2016/0422
+                                                      Beyond Collections
+Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                  Website: www.collexia.co
+         MD07                                18                  Account holder deceased
+
+
+         NA30                                30                  No authority to debit
+
+         AM14                                40                  Item Limit Exceeded
+
+
+         AB10                                44                  Unable to Process
+
+         AC02 / AC13 /TR66                   48                  Account No Fails CDV Routine
+
+         MD01                                56                  Non Fica Compliant Account
+
+
+         TR75                                99                  Tracking (Held for representment) - Will NOT
+                                                                 be downloaded
+
+
+
+
+    T
+  AF
+ R
+D
+
+
+
+                                                 Collexia Regno :2016/0422
+                                                      Beyond Collections
+Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                  Website: www.collexia.co
+

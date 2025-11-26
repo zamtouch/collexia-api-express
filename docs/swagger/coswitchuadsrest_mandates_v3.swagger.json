@@ -1,0 +1,926 @@
+{
+  "info": {
+    "title": "coswitchuadsrest-mandates",
+    "description": "Mandates API",
+    "version": "3.0",
+    "contact": {
+      "name": "SoftSplice",
+      "url": "https://www.softsplice.co.za",
+      "email": "support@softsplice.co.za"
+    },
+    "x-ISC_DispatchParent": "REST.CORSHandler"
+  },
+  "tags": [],
+  "paths": {
+    "/v3/mandates/load": {
+      "post": {
+        "summary": "Request For Mandate Load",
+        "deprecated": false,
+        "description": "",
+        "operationId": "post-load",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "messageInfo": {
+                  "description": "Message info of Request",
+                  "$ref": "#/definitions/messageInfo"
+                },
+                "mandate": {
+                  "description": "Mandate of Request",
+                  "$ref": "#/definitions/mandateRequest"
+                }
+              },
+              "required": [
+                "messageInfo",
+                "mandate"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/loadMandateResponse"
+            }
+          },
+          "400": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/v3/mandates/finalfate": {
+      "post": {
+        "summary": "Request Final Fate for Mandate Load",
+        "deprecated": false,
+        "description": "",
+        "operationId": "post-finalfate",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/mandateFinalFateRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/mandateFinalFateResponse"
+            }
+          },
+          "400": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/v3/mandates/batch/mandateenquiry": {
+      "post": {
+        "summary": "Mandate Enquiry",
+        "deprecated": false,
+        "description": "",
+        "operationId": "post-batch-mandateenquiry",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/mandateEnquiryRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/mandateEnquiryResponse"
+            }
+          },
+          "400": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/v3/mandates/cancel": {
+      "post": {
+        "summary": "Cancel of Mandate",
+        "deprecated": false,
+        "description": "",
+        "operationId": "post-cancel",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/cancelMandateRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/systemTraceAuditNoResponse"
+            }
+          },
+          "400": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    }
+  },
+  "security": [
+    {
+      "basic": []
+    }
+  ],
+  "swagger": "2.0",
+  "definitions": {
+    "errors": {
+      "type": "object",
+      "properties": {
+        "rcoId": {
+          "type": "integer",
+          "description": "Internal Reference"
+        },
+        "code": {
+          "type": "string",
+          "description": "Error Code",
+          "minLength": 1,
+          "maxLength": 8
+        },
+        "message": {
+          "type": "string",
+          "description": "Error Message",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "detail": {
+          "type": "string",
+          "description": "Error Detail",
+          "minLength": 1,
+          "maxLength": 50
+        }
+      },
+      "required": [
+        "rcoId",
+        "code",
+        "message",
+        "detail"
+      ]
+    },
+    "errorResponse": {
+      "type": "object",
+      "properties": {
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/errors",
+            "description": "Error Detail"
+          },
+          "description": "Error Detail"
+        },
+        "status": {
+          "type": "string",
+          "description": "Status Code of Error",
+          "minLength": 1,
+          "maxLength": 8
+        },
+        "summary": {
+          "type": "string",
+          "description": "Summary of Error",
+          "minLength": 1,
+          "maxLength": 50
+        }
+      },
+      "required": [
+        "errors",
+        "status",
+        "summary"
+      ]
+    },
+    "mandateRequest": {
+      "type": "object",
+      "properties": {
+        "clientNo": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 15,
+          "description": "Alphanumeric number for your client"
+        },
+        "userReference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10,
+          "description": "Alphanumeric reference for the mandate"
+        },
+        "frequencyCode": {
+          "type": "integer",
+          "description": "Code for the frequency\n1-Weekly,3-Fortnightly,4-Monthly, 5-Monthly by Rule\n"
+        },
+        "installmentAmount": {
+          "type": "number",
+          "description": "Installment amount in Currency"
+        },
+        "noOfInstallments": {
+          "type": "integer",
+          "description": "Number of installments "
+        },
+        "origin": {
+          "type": "integer",
+          "description": "Origin will be supplied"
+        },
+        "contractReference": {
+          "type": "string",
+          "description": "First 4 characters will be the Merchant’s GID in HEX.\nNext 4 character is the calculated base date\nLast 6 characters is the teller for the day\n",
+          "minLength": 14,
+          "maxLength": 14
+        },
+        "magId": {
+          "type": "integer",
+          "description": "20 - TMCT\n21 - MCT\n45 - DC\n46 - Endo\n54 - RM\n"
+        },
+        "initialAmount": {
+          "type": "number",
+          "description": "The amount you want to collect on your first installment.(Will override the installmentAmount for the 1st installment)\n\nOnly to be used when you want to collect a greater amount than the installmentAmount.\n\nLeave 0 if not used.\n"
+        },
+        "firstCollectionDate": {
+          "type": "string",
+          "description": "The first installment date",
+          "minLength": 8,
+          "maxLength": 8,
+          "format": "yyyymmdd"
+        },
+        "collectionDay": {
+          "type": "integer",
+          "description": "Day of the Month/Week you want to collect \nWeekly \n—-------------\n01 - Monday\n02 - Tuesday\n03 - Wednesday\n04 - Thursday\n05 - Friday\n06 - Saturday\n07 - Sunday\n\nFortnightly\n—------------------\n01 Monday to 07 Sunday  of 1st week\n08 Monday to 14 Sunday of 2nd week\n\nMonthly\n—-------------\n1-30\n31/99 = Last day of the month\n"
+        },
+        "numberOfTrackingDays": {
+          "type": "integer",
+          "description": "No of Tracking days 1-10"
+        },
+        "debtorAccountName": {
+          "type": "string",
+          "description": "Name of Debtor",
+          "minLength": 35,
+          "maxLength": 35
+        },
+        "debtorIdentificationType": {
+          "type": "integer",
+          "description": "Identification type of the Debtor.\n\n1 - RSA ID\n2 - Passport\n3 - Temp ID\n4- Business\n"
+        },
+        "debtorIdentificationNo": {
+          "type": "string",
+          "description": "Identification number of Debtor.",
+          "minLength": 33,
+          "maxLength": 33
+        },
+        "debtorAccountNumber": {
+          "type": "string",
+          "description": "Account number of the Debtor",
+          "minLength": 1,
+          "maxLength": 9
+        },
+        "debtorAccountType": {
+          "type": "integer",
+          "description": "Account type of the Debtor account.\n\n1 - Current\n2 - Savings\n3 - Transmission\n"
+        },
+        "debtorBanId": {
+          "type": "integer",
+          "description": "Debtor Bank Id"
+        }
+      },
+      "required": [
+        "userReference",
+        "frequencyCode",
+        "installmentAmount",
+        "noOfInstallments",
+        "origin",
+        "contractReference",
+        "magId",
+        "collectionDay",
+        "numberOfTrackingDays",
+        "debtorAccountName",
+        "debtorIdentificationType",
+        "debtorIdentificationNo",
+        "debtorBanId",
+        "debtorAccountType",
+        "debtorAccountNumber"
+      ]
+    },
+    "messageInfo": {
+      "type": "object",
+      "properties": {
+        "merchantGid": {
+          "type": "integer",
+          "description": "The Merchant’s GID as provided"
+        },
+        "remoteGid": {
+          "type": "integer",
+          "description": "System ID as provided"
+        },
+        "messageDate": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 8,
+          "format": "yyyymmdd",
+          "description": "Date the message was sent"
+        },
+        "messageTime": {
+          "type": "string",
+          "minLength": 6,
+          "maxLength": 6,
+          "format": "hhmmss",
+          "description": "Time the message was sent"
+        },
+        "systemUserName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30,
+          "description": "Your integration username that will be supplied to you, this will always be the same"
+        },
+        "frontEndUserName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30,
+          "description": "This is the username of the user on your system that is loading the mandate."
+        }
+      },
+      "required": [
+        "merchantGid",
+        "remoteGid",
+        "messageDate",
+        "messageTime",
+        "systemUserName",
+        "frontEndUserName"
+      ]
+    },
+    "loadMandateResponse": {
+      "type": "object",
+      "properties": {}
+    },
+    "mandateFinalFateRequest": {
+      "type": "object",
+      "properties": {
+        "contractReference": {
+          "type": "string",
+          "description": "Contract reference of the mandate you want the final response of",
+          "minLength": 14,
+          "maxLength": 14
+        },
+        "merchantGid": {
+          "type": "integer",
+          "description": "The Merchant’s GID as provided"
+        },
+        "frontEndUserName": {
+          "type": "string",
+          "description": "Username of the user on the system that is requesting the information",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "remoteGid": {
+          "type": "integer",
+          "description": "System ID as given"
+        }
+      },
+      "required": [
+        "contractReference",
+        "merchantGid",
+        "frontEndUserName",
+        "remoteGid"
+      ]
+    },
+    "mandateFinalFateResponse": {
+      "type": "object",
+      "properties": {
+        "mandateLoaded": {
+          "type": "boolean",
+          "description": "Indicates whether the mandate was authorised or not."
+        },
+        "mandateLoadedResponseCode": {
+          "type": "string",
+          "description": "Response Code",
+          "minLength": 1,
+          "maxLength": 6
+        },
+        "authorizationOutstanding": {
+          "type": "integer",
+          "description": "1-Y, 2-N"
+        }
+      },
+      "required": [
+        "mandateLoaded",
+        "mandateLoadedResponseCode",
+        "authorizationOutstanding"
+      ]
+    },
+    "mandateEnquiryRequest": {
+      "type": "object",
+      "properties": {
+        "merchantGid": {
+          "type": "integer",
+          "description": "The Merchant’s GID as provided"
+        },
+        "contractReference": {
+          "type": "string",
+          "description": "Contract reference of the mandate you want the information of",
+          "minLength": 14,
+          "maxLength": 14
+        },
+        "debtorAccountNumber": {
+          "type": "string",
+          "description": "The Debtor AccountNumber",
+          "minLength": 1,
+          "maxLength": 11
+        },
+        "frequencyCode": {
+          "type": "integer",
+          "description": "Code for the frequency\n1-Weekly,3-Fortnightly,4-Monthly, 5-Monthly by Rule\n"
+        },
+        "magId": {
+          "type": "integer",
+          "description": "20 - TMCT\n21 - MCT\n45 - DC\n46 - Endo\n54 - RM\n"
+        },
+        "fromDate": {
+          "type": "string",
+          "description": "Creation date From (Start)",
+          "format": "yyyymmdd",
+          "minLength": 8,
+          "maxLength": 8
+        },
+        "toDate": {
+          "type": "string",
+          "description": "Creation date To (End) ",
+          "format": "yyyymmdd",
+          "minLength": 8,
+          "maxLength": 8
+        },
+        "remoteGid": {
+          "type": "integer",
+          "description": "System ID as given"
+        }
+      },
+      "required": [
+        "merchantGid",
+        "remoteGid"
+      ]
+    },
+    "mandateEnquiryResponse": {
+      "type": "object",
+      "properties": {
+        "mandate": {
+          "type": "array",
+          "items": {
+            "description": "Mandates",
+            "$ref": "#/definitions/mandateResponse"
+          },
+          "description": "Mandates"
+        }
+      },
+      "required": [
+        "mandate"
+      ]
+    },
+    "mandateResponse": {
+      "type": "object",
+      "properties": {
+        "clientNo": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 15,
+          "description": "Alphanumeric number for the Debtor"
+        },
+        "debtorAccountName": {
+          "type": "string",
+          "description": "Name of Debtor",
+          "minLength": 1,
+          "maxLength": 35
+        },
+        "debtorIdentificationType": {
+          "type": "integer",
+          "description": "Identification type of debtor.\n\n1 - RSA ID\n2 - Passport\n3- Temp ID\n4 - Business\n"
+        },
+        "debtorIdentificationNo": {
+          "type": "string",
+          "description": "Identification number of debtor.",
+          "minLength": 1,
+          "maxLength": 33
+        },
+        "debtorAccountNumber": {
+          "type": "string",
+          "description": "Account number of the debtor",
+          "minLength": 1,
+          "maxLength": 20
+        },
+        "debtorAccountType": {
+          "type": "integer",
+          "description": "1-Current\n2-Savings\n3-Transmission\n"
+        },
+        "contractReference": {
+          "type": "string",
+          "description": "14 Character unique number for the mandate.",
+          "minLength": 14,
+          "maxLength": 14
+        },
+        "userReference": {
+          "type": "string",
+          "description": "Alphanumeric reference for your client",
+          "minLength": 15,
+          "maxLength": 15
+        },
+        "frequencyCode": {
+          "type": "integer",
+          "description": "Code for the frequency\n1-Weekly,3-Fortnightly,4-Monthly, 5-Monthly by Rule\n"
+        },
+        "firstInstallmentDate": {
+          "type": "string",
+          "description": "The first installment date",
+          "format": "yyyymmdd",
+          "minLength": 8,
+          "maxLength": 8
+        },
+        "dayOfMonthRule": {
+          "type": "integer",
+          "description": "Day of the Month/Week you are collecting on."
+        },
+        "noOfInstallments": {
+          "type": "integer",
+          "description": "Total number of installments for the mandate."
+        },
+        "initialAmount": {
+          "type": "number",
+          "description": "The initial amount that was used on registration of the mandate. If 0 was sent, this will return with the same value as the installment amount."
+        },
+        "firstCollectionDate": {
+          "type": "string",
+          "description": "The first installment date",
+          "format": "yyyymmdd",
+          "minLength": 8,
+          "maxLength": 8
+        },
+        "originalInstallmentAmount": {
+          "type": "number",
+          "description": "Installment amount in Currency"
+        },
+        "collectionDay": {
+          "type": "integer",
+          "description": "Day of the Month/Week you are collecting on."
+        },
+        "creationDate": {
+          "type": "string",
+          "description": "Date the message was sent",
+          "format": "yyyymmdd",
+          "minLength": 8,
+          "maxLength": 8
+        },
+        "creationTime": {
+          "type": "string",
+          "description": "Time the message was sent",
+          "minLength": 6,
+          "maxLength": 6,
+          "format": "hhmmss"
+        },
+        "status": {
+          "type": "integer",
+          "description": "Status of the Mandate on the database.\n\n1 - Data Error\n2 - Active\n3 - Completed\n4 - Cancelled\n5 - Suspended\n6 - CancelInProgress\n7 - SuspendedInProcess\n8 - Manually Processed\n"
+        },
+        "userName": {
+          "type": "string",
+          "description": "Username of the person that loaded the Mandate originally."
+        },
+        "debtorBanId": {
+          "type": "integer",
+          "description": "Debtor Bank ID"
+        },
+        "installments": {
+          "type": "array",
+          "items": {
+            "description": "Installments",
+            "$ref": "#/definitions/installmentsResponse"
+          },
+          "description": "Installments"
+        }
+      },
+      "required": [
+        "clientNo",
+        "debtorAccountNumber",
+        "contractReference",
+        "userReference",
+        "frequencyCode",
+        "noOfInstallments",
+        "originalInstallmentAmount",
+        "collectionDay",
+        "creationDate",
+        "creationTime",
+        "status",
+        "userName",
+        "debtorBanId",
+        "installments"
+      ]
+    },
+    "installmentsResponse": {
+      "type": "object",
+      "properties": {
+        "intId": {
+          "type": "integer",
+          "description": "Installment ID on the database"
+        },
+        "noOfInstallment": {
+          "type": "integer",
+          "description": "Installment No (current)"
+        },
+        "status": {
+          "type": "integer",
+          "description": "Status of the installment on the database.\n\n1 - Active\n2 - Cancelled\n3 - Insufficient Funds\n4 - Send For Payment\n5 - In Tracking\n6 - Completed\n7 - Recalled\n8 - Rejected\n9 - Suspended\n10 - Disputed\n11 - Expired\n12 - Migrated\n13 - Manually Processed\n17 - Blocked\n18 - Partially Completed\n"
+        },
+        "trackingDate": {
+          "type": "string",
+          "description": "Date the installment will start tracking.",
+          "minLength": 8,
+          "maxLength": 8,
+          "format": "yyyymmdd"
+        },
+        "scheduledDate": {
+          "type": "string",
+          "description": "Date the installment is scheduled for.",
+          "minLength": 8,
+          "maxLength": 8,
+          "format": "yyyymmdd"
+        },
+        "installmentAmount": {
+          "type": "number",
+          "description": "Installment amount in Currency"
+        },
+        "paymentDate": {
+          "type": "string",
+          "description": "Date payment was received for installment.",
+          "minLength": 8,
+          "format": "yyyymmdd"
+        },
+        "paymentAmount": {
+          "type": "number",
+          "description": "Payment amount in Currency"
+        },
+        "numberOfTrackingDays": {
+          "type": "integer",
+          "description": "No of Tracking days"
+        },
+        "statementReference": {
+          "type": "string",
+          "description": "Statement Reference to be displayed on the Payer Statement",
+          "minLength": 1,
+          "maxLength": 140
+        },
+        "frequencyCode": {
+          "type": "integer",
+          "description": "Frequency Code of the Mandate"
+        },
+        "firstPayDate": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 8,
+          "format": "yyyymmdd",
+          "description": "The first installment date"
+        },
+        "initialAmount": {
+          "type": "number",
+          "description": "The initial amount that was used on registration of the mandate. If 0 was sent, this will return with the same value as the installment amount."
+        },
+        "firstCollectionDate": {
+          "type": "string",
+          "format": "yyyymmdd",
+          "minLength": 8,
+          "maxLength": 8,
+          "description": "The first installment date"
+        },
+        "maximumCollectionAmount": {
+          "type": "number",
+          "description": "Maximum collect amount in Rands"
+        },
+        "adjustmentCategory": {
+          "type": "integer",
+          "description": "1 - Never\n2 - Quarterly\n3 - Annually\n4 - Bi-annually\n5 - Repo\n\n2,3,4,5 only to be used with debitValueType = 2(Variable)\n\nOtherwise always 1 - Never\n"
+        },
+        "adjustmentAmount": {
+          "type": "number",
+          "description": "Amount in Currency"
+        },
+        "adjustmentRate": {
+          "type": "number",
+          "description": "The adjustment rate you are using eg:\n\n3 = 3%\n\nOnly used with Variable adjustmentCategory. Must be 0  if not Variable.\n"
+        },
+        "collectionDay": {
+          "type": "integer",
+          "description": "Day of the Month/Week you are collecting on."
+        },
+        "dateAdjustmentRuleIndicator": {
+          "type": "integer",
+          "description": "1 - Y (The mandate may be rescheduled)\n2 - N (The mandate may not be rescheduled)\n"
+        },
+        "trackingIndicator": {
+          "type": "integer",
+          "description": "1 - Y (Tracking allowed on mandate)\n2 - N (Tracking not allowed on mandate)\n"
+        },
+        "creationDate": {
+          "type": "string",
+          "format": "yyyymmdd",
+          "minLength": 8,
+          "maxLength": 8,
+          "description": "Date the message was sent"
+        },
+        "creationTime": {
+          "type": "string",
+          "minLength": 6,
+          "maxLength": 6,
+          "format": "hhmmss",
+          "description": "Time the message was sent"
+        }
+      },
+      "required": [
+        "intId",
+        "status",
+        "trackingDate",
+        "scheduledDate",
+        "installmentAmount",
+        "paymentDate",
+        "paymentAmount",
+        "numberOfTrackingDays"
+      ]
+    },
+    "cancelMandateRequest": {
+      "type": "object",
+      "properties": {
+        "contractReference": {
+          "type": "string",
+          "description": "Contract reference of the mandate you want to cancel.",
+          "minLength": 1,
+          "maxLength": 14
+        },
+        "frontEndUserName": {
+          "type": "string",
+          "description": "Username of the user on the system that is requesting the cancellation.",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "remoteGid": {
+          "type": "integer",
+          "description": "System ID "
+        },
+        "merchantGid": {
+          "type": "integer",
+          "description": "The Merchant’s GID provided"
+        }
+      },
+      "required": [
+        "contractReference",
+        "frontEndUserName",
+        "remoteGid",
+        "merchantGid"
+      ]
+    },
+    "systemTraceAuditNoResponse": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  "securityDefinitions": {
+    "basic": {
+      "type": "basic"
+    }
+  },
+  "x-components": {}
+}

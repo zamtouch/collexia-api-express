@@ -1,0 +1,156 @@
+     API Security Standards for Third Party
+                  Integration
+                                                          22 November 2024
+                                                              Ver 1.01
+
+
+
+                                                             Created by
+
+
+
+
+COPYRIGHT RESERVED – SOFTSPLICE PUBLICATION
+The information contained in this document is proprietary information which is protected by copyright and at law. All rights are reserved.
+No part of the information contained in this document may be copied, reproduced, disseminated, transmitted, transcribed, extracted,
+stored in a retrieval system, or translated into any language in any form or by any means, electronic, mechanical, magnetic, optical,
+chemical, manual or otherwise, in whole or in part, without the prior written consent of SOFTSPLICE.
+
+©SOFTSPLICE
+PO BOX 74771 ▪ LYNNWOOD RIDGE ▪ 0040
+
+COPYRIGHT RESERVED – SOFTSPLICE PUBLICATION
+Table Of Contents
+Table Of Contents                         2
+Extraction for Third-Party API Security   3
+   1. Security Requirements               3
+       1.1. Http Basic Authentication     3
+       1.2. SSL Client Certificate        3
+       1.3. Digital signing               4
+       1.4. IP Address White Listing      5
+Extraction for Third-Party API Security
+
+
+1.   Security Requirements
+     For additional security, the following security measures were implemented to ensure the
+     utmost protection of data and privacy.
+
+
+     1.1.   Http Basic Authentication
+
+            HTTP authentication headers
+
+            If the user's name is "test", and the password is the string "123" followed by the
+            Unicode character U+00A3 (POUND SIGN). Using the character encoding scheme
+            UTF-8, the user-pass becomes:
+
+               't' 'e' 's' 't' ':' '1' '2' '3' pound
+               74 65 73 74 3A 31 32 33 C2 A3
+
+            Encoding this octet sequence in Base64 ([RFC4648], Section 4) yields:
+            dGVzdDoxMjPCow==
+
+            The Authorization header field would be:
+               Authorization: Basic dGVzdDoxMjPCow==
+
+
+
+     1.2.   SSL Client Certificate
+            Two way SSL, also known as mutual SSL certificates, are SSL certificates where
+            the server and the client authenticate each other for a more robust security.
+
+            It is required to obtain a valid TLS certificate for the Client, this is the integration
+            partner’s own responsibility.
+
+            It is crucial to select the hostnames with care to ensure the accurate creation of the
+            certificate.
+
+            The technical network specialists on both sides will coordinate to confirm the
+            hostnames.
+
+            Depending on the programming language and framework you're using, the specific
+            implementation steps may vary. However, the general approach is as follows:
+
+        ●   Load Client Certificate and Key: Load the client's certificate and private key into
+            your application. These are typically stored in files (e.g., PEM, PFX/P12) or
+            keystores (e.g., JKS).
+        ●   Enable mTLS: Configure your application to use mTLS when establishing a
+            connection with the server. This typically involves specifying the location of the client
+            certificate and key, as well as any necessary truststore settings to verify the server's
+            certificate.
+
+
+
+
+  1.3.      Digital signing
+            The integration partner will be provided a Client Identifier with a secret. This is used
+            to append additional HTTP headers that serve as a digital signature. Please see
+            headers below:
+
+            [Header_Prefix]_CLIENTID
+               ● Description: This header contains a unique identifier assigned by us to the
+                  client for authentication and tracking purposes.
+               ● Type: String
+               ● Example: [Header_Prefix]_CLIENTID:
+                  94C132DE-136E-14EF-9154-4287C0A8140C
+               ● Required: Yes
+
+            [Header_Prefix]_DTS
+               ● Description: This header represents the Date Time Stamp of the request. It
+                  should be set to the current timestamp when the request is made.
+               ● Type: String (ISO 8601 format)
+               ● Example: [Header_Prefix]_DTS: 2024-05-16 11:56:51.155
+               ● Required: Yes
+
+            [Header_Prefix]_HSH
+               ● Description: This header contains a Hash-based Message Authentication
+                  Code (HMAC) value. The client generates this HMAC value for each request
+                  to ensure data integrity and authenticity using HMACSHA512 cryptographic
+                  hash function. A Client Secret for this ClientID will be provided to use for this
+                  function
+               ● Type: String
+               ● Example: [Header_Prefix]_HSH:
+                      ○ Concatenate [Header_Prefix]_CLIENTID and [Header_Prefix]_DTS:
+
+
+Unset
+               HMACSHA512_String = “94C132DE-136E-14EF-9154-4287C0A8140C” +
+               “2024-05-16 11:56:51.155”
+
+
+                       ●   Call a function, for example. hmac_sha512(secret, message)
+                       ●   Example Client Secret : "Roj=Zw4$#jpiK9nx"
+Unset
+            secret = "Roj=Zw4$#jpiK9nx"
+            hmac_value = hmac_sha512(secret, HMACSHA512_String)
+
+
+
+
+                     ●   Perform base64 encoding on hmac_value
+
+
+Unset
+                     base64_encoded_hmac_value = base64encode(hmac_value)
+
+
+                     ●   [Header_Prefix]_HSH = base64_encoded_hmac_value
+
+
+Unset
+            eg.    then will be
+            [Header_Prefix]_HSH =
+            “L/QM1h/9ijHn1iI+SvV7hq216rRgW16XcMbbrR7/ufOkO69fO/bp5CceeAl9wXdMFGcj
+            px4fMunT39mRwhVTSQ==”
+
+
+
+
+            ●     Required: Yes
+
+
+  1.4.   IP Address White Listing
+         The integration partner must provide the IP address of the server(s) that will access
+         UAT and Production. The REST endpoints will check the incoming request IP
+         address against the configured allowed IP address list.
+

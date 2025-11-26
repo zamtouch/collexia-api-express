@@ -1,0 +1,15 @@
+node_modules/
+.env
+.env.local
+.vercel
+*.log
+logs/
+.DS_Store
+.vscode/
+.idea/
+
+# PHP files (keep for reference but don't deploy)
+# Uncomment if you want to exclude PHP files
+# api/*.php
+# src/*.php
+# *.php

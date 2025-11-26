@@ -1,0 +1,619 @@
+{
+  "info": {
+    "title": "coswitchuadsrest-encrtransfer",
+    "description": "EnCr Transfer API",
+    "version": "1.0.0",
+    "contact": {
+      "name": "SoftSplice",
+      "url": "https://www.softsplice.co.za",
+      "email": "support@softsplice.co.za"
+    },
+    "x-ISC_DispatchParent": "REST.CORSHandler",
+    "x-ISC_Import": "IO.REST.OpenAPI.PaymentHistory.CollectionsNAM.V3"
+  },
+  "tags": [],
+  "paths": {
+    "/v3/encr/transfer": {
+      "post": {
+        "summary": "EnCr Transfer Request",
+        "deprecated": false,
+        "description": "",
+        "operationId": "post-encrtransfer-request",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/EnCrTransferRequest"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "400": {
+            "description": "",
+            "headers": {},
+            "examples": {
+              "application/json": {
+                "status": "400",
+                "summary": "BAD REQUEST",
+                "errors": [
+                  {
+                    "code": "400",
+                    "message": "Incorrect Account Type",
+                    "detail": ""
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "",
+            "headers": {},
+            "examples": {
+              "application/json": {
+                "status": "401",
+                "summary": "Unauthorized",
+                "errors": [
+                  {
+                    "code": "401",
+                    "message": "User is not Authorized",
+                    "detail": ""
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "404": {
+            "description": "",
+            "headers": {},
+            "examples": {
+              "application/json": {
+                "status": "404",
+                "summary": "NOT FOUND",
+                "errors": [
+                  {
+                    "code": "404",
+                    "message": "API Not Found",
+                    "detail": ""
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "500": {
+            "description": "",
+            "headers": {},
+            "examples": {
+              "application/json": {
+                "status": "500",
+                "summary": "INTERNAL SERVER ERROR",
+                "errors": [
+                  {
+                    "code": "500",
+                    "message": "Something went wrong in the system",
+                    "detail": ""
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/v3/encr/info": {
+      "post": {
+        "summary": "EnCr Request Info",
+        "deprecated": false,
+        "description": "",
+        "operationId": "post-encrtransfer-info",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/EnCrRequestInfoReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/EnCrTransferInfoRes"
+            }
+          },
+          "400": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/Errors_2"
+            }
+          },
+          "401": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/Errors_2"
+            }
+          },
+          "404": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/Errors_2"
+            }
+          },
+          "500": {
+            "description": "",
+            "headers": {},
+            "examples": {
+              "application/json": "{\r\n   \"remoteReferenceNo\": \"0029789700RB39\",\r\n   \"systemUserName\": “cxuser”,\r\n   \"frontEndUserName\": \"ruaanb”,\r\n   \"remoteGid\":39,\r\n   \"messageDate\": \"20240614\",\r\n\t\"messageTime\": \"144230\",\r\n\t\"uacId\":45\r\n}\r\n"
+            },
+            "schema": {
+              "$ref": "#/definitions/Errors_2"
+            }
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    }
+  },
+  "security": [
+    {
+      "basic": []
+    }
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "swagger": "2.0",
+  "definitions": {
+    "EnCrRequestInfoReq": {
+      "type": "object",
+      "properties": {
+        "remoteReferenceNo": {
+          "type": "string",
+          "description": "Unique Reference No claculated by integrator to identify this Request",
+          "pattern": "^[a-zA-Z0-9]+$"
+        },
+        "systemUserName": {
+          "type": "string",
+          "description": "System User Name as provided",
+          "maxLength": 20,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9]+$"
+        },
+        "frontEndUserName": {
+          "type": "string",
+          "description": "User name as per Integrator's application",
+          "maxLength": 20,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9]+$"
+        },
+        "remoteGid": {
+          "type": "integer",
+          "description": "Remote GID given",
+          "minimum": 1,
+          "maximum": 99
+        },
+        "messageDate": {
+          "type": "string",
+          "description": "Message Date",
+          "maxLength": 8,
+          "pattern": "^\\d{8}$"
+        },
+        "messageTime": {
+          "type": "string",
+          "description": "Message Time",
+          "maxLength": 6,
+          "pattern": "^\\d{6}$"
+        },
+        "uacId": {
+          "type": "integer",
+          "description": "User Access ID as provided",
+          "minimum": 1,
+          "maximum": 999999
+        }
+      },
+      "required": [
+        "remoteReferenceNo",
+        "systemUserName",
+        "frontEndUserName",
+        "remoteGid",
+        "messageDate",
+        "messageTime",
+        "uacId"
+      ]
+    },
+    "EnCrTransferInfoRes": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer",
+          "description": "1 - Loaded\n2 - Approved\n3 - Completed\n4 - Rejected\n5 - Cancelled\n6 - Submitted\n7 - Declined",
+          "enum": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "maximum": 7,
+          "minimum": 1
+        },
+        "statusDate": {
+          "type": "string",
+          "description": "Date of Status",
+          "maxLength": 8,
+          "pattern": "^\\d{8}$",
+          "minLength": 1
+        },
+        "statusTime": {
+          "type": "string",
+          "description": "Time of Status",
+          "maxLength": 6,
+          "pattern": "^\\d{6}$",
+          "minLength": 1
+        },
+        "amountPaidOut": {
+          "type": "number",
+          "description": "Amount Paid Out (0 if error occurred)",
+          "maximum": 999999999999.99,
+          "minimum": 1
+        },
+        "responseCode": {
+          "type": "string",
+          "description": "Response Code",
+          "maxLength": 8,
+          "pattern": "^[a-zA-Z0-9]+$",
+          "minLength": 1
+        },
+        "responseDescription": {
+          "type": "string",
+          "description": "Response Description",
+          "maxLength": 250,
+          "pattern": "^[a-zA-Z0-9]+$",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "status",
+        "statusDate",
+        "statusTime",
+        "amountPaidOut",
+        "responseCode",
+        "responseDescription"
+      ]
+    },
+    "EnCrTransferRequest": {
+      "type": "object",
+      "properties": {
+        "remoteGid": {
+          "type": "integer",
+          "description": "Remote GID given",
+          "minimum": 1,
+          "maximum": 99
+        },
+        "remoteReferenceNo": {
+          "type": "string",
+          "description": "User Reference No calculated by integrator to identify this Request",
+          "maxLength": 14,
+          "pattern": "^[a-zA-Z0-9]+$",
+          "minLength": 1
+        },
+        "messageDate": {
+          "type": "string",
+          "description": "Message Date",
+          "maxLength": 8,
+          "pattern": "^\\d{8}$",
+          "minLength": 1
+        },
+        "messageTime": {
+          "type": "string",
+          "description": "Message Time",
+          "maxLength": 6,
+          "pattern": "^\\d{6}$",
+          "minLength": 1
+        },
+        "fromGlobalId": {
+          "type": "integer",
+          "description": "Global ID From",
+          "maximum": 99999,
+          "minimum": 1
+        },
+        "fromAccountNo": {
+          "type": "string",
+          "description": "Account No From",
+          "maxLength": 20,
+          "pattern": "^[0-9]+$",
+          "minLength": 1
+        },
+        "fromAccountType": {
+          "type": "integer",
+          "description": "Account Type from\n1 - Current (Cheque)\n2 - Savings",
+          "maximum": 2,
+          "minimum": 1,
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "fromBanId": {
+          "type": "integer",
+          "description": "Bank ID - Appendix",
+          "minimum": 1,
+          "maximum": 99
+        },
+        "systemUserName": {
+          "type": "string",
+          "description": "System User Name as provided",
+          "maxLength": 20,
+          "pattern": "^[a-zA-Z0-9]+$",
+          "minLength": 1
+        },
+        "frontEndUserName": {
+          "type": "string",
+          "description": "User Name as per Integrator's application",
+          "maxLength": 20,
+          "pattern": "^[a-zA-Z0-9]+$",
+          "minLength": 1
+        },
+        "transactionAmount": {
+          "type": "number",
+          "description": "Transaction Amount (In N$)",
+          "minimum": 0,
+          "maximum": 999999999999.99
+        },
+        "ownStatementReference": {
+          "type": "string",
+          "description": "Own Statement Reference",
+          "maxLength": 40,
+          "pattern": "^[a-zA-Z0-9]+$",
+          "minLength": 1
+        },
+        "beneficiaryReference": {
+          "type": "string",
+          "description": "Beneficiary Reference",
+          "maxLength": 40,
+          "pattern": "^[a-zA-Z0-9]+$",
+          "minLength": 1
+        },
+        "contractReference": {
+          "type": "string",
+          "description": "Contract Reference",
+          "maxLength": 14,
+          "pattern": "^[a-zA-Z0-9]+$",
+          "minLength": 1
+        },
+        "toAccountNo": {
+          "type": "integer",
+          "description": "Account No to",
+          "maximum": 99,
+          "minimum": 1
+        },
+        "toBanId": {
+          "type": "integer",
+          "description": "Bank ID (for appendix provided)",
+          "maximum": 99,
+          "minimum": 1
+        },
+        "toAccountType": {
+          "type": "integer",
+          "description": "Account Type to\n1 - Current (Cheque)\n2 - Savings",
+          "maximum": 2,
+          "minimum": 1,
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "transferAlreadyAuthed": {
+          "type": "boolean",
+          "description": "Flag to say if transfer was already authorized prior to request or not"
+        },
+        "uacId": {
+          "type": "integer",
+          "description": "User Access ID as provided",
+          "maximum": 999999,
+          "minimum": 1
+        }
+      },
+      "required": [
+        "remoteGid",
+        "remoteReferenceNo",
+        "messageDate",
+        "messageTime",
+        "fromGlobalId",
+        "fromAccountType",
+        "fromBanId",
+        "systemUserName",
+        "frontEndUserName",
+        "transactionAmount",
+        "ownStatementReference",
+        "beneficiaryReference",
+        "toBanId",
+        "toAccountType",
+        "uacId",
+        "transferAlreadyAuthed",
+        "toAccountNo"
+      ]
+    },
+    "Errors_2": {
+      "type": "object",
+      "x-examples": {
+        "example-1": {
+          "status": "string",
+          "summary": "string",
+          "errors": [
+            {
+              "code": "string",
+              "message": "string",
+              "detail": "string"
+            }
+          ]
+        }
+      },
+      "title": "Errors",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "Status of Error\n",
+          "maxLength": 8,
+          "minLength": 1
+        },
+        "summary": {
+          "type": "string",
+          "description": "Summary of Error",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        "errors": {
+          "type": "array",
+          "description": "ErrorCodes ",
+          "items": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Error Code (1.8 Error Codes)",
+                "minLength": 1,
+                "maxLength": 8
+              },
+              "message": {
+                "type": "string",
+                "description": "Error Text",
+                "minLength": 1,
+                "maxLength": 250
+              },
+              "detail": {
+                "type": "string",
+                "description": "Detail of the Error",
+                "minLength": 1,
+                "maxLength": 50
+              },
+              "rcoId": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "code"
+            ]
+          }
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "description": "Basic Error exception"
+    },
+    "Errors": {
+      "type": "object",
+      "x-examples": {
+        "example-1": {
+          "status": "string",
+          "summary": "string",
+          "errors": [
+            {
+              "code": "string",
+              "message": "string",
+              "detail": "string"
+            }
+          ]
+        }
+      },
+      "title": "Errors",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "Status of Error\n"
+        },
+        "summary": {
+          "type": "string",
+          "description": "Summary of Error"
+        },
+        "errors": {
+          "type": "array",
+          "description": "ErrorCodes ",
+          "items": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Error Code (1.8 Error Codes)"
+              },
+              "message": {
+                "type": "string",
+                "description": "Error Text"
+              },
+              "detail": {
+                "type": "string",
+                "description": "Detail of the Error"
+              }
+            },
+            "required": [
+              "code"
+            ]
+          }
+        }
+      },
+      "required": [
+        "status"
+      ]
+    }
+  },
+  "securityDefinitions": {
+    "basic": {
+      "type": "basic"
+    }
+  },
+  "x-components": {}
+}

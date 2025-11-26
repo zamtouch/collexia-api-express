@@ -1,0 +1,918 @@
+                                                ft
+              ra
+                                  EnCr JSON REST
+                                    API Interface
+D
+                                    Specification
+                                                        22 July 2025
+                                                        Version 3.00
+
+
+
+
+         COPYRIGHT RESERVED – Collexia PUBLICATION
+        The information contained in this document is proprietary information which is protected by copyright and
+        at law. All rights are reserved. No part of the information contained in this document may be copied,
+        reproduced, disseminated, transmitted, transcribed, extracted, stored in a retrieval system or translated
+        into any language in any form or by any means, electronic, mechanical, magnetic, optical, chemical,
+        manual or otherwise, in whole or in part, without the prior written consent of Collexia.
+        ©Collexia
+        PO Box 150, Windhoek, Namibia, 9000.
+        Tel: +264 61 21 2567
+
+                                                 Collexia Regno :2016/0422
+                                                      Beyond Collections
+Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                  Website: www.collexia.co
+        Version Control
+
+
+
+Version No                 Date Released                      Description
+
+V3.00                                                         Added initial draft of new API for Enhanced Credit
+
+
+
+
+                                                        ft
+                      ra
+D
+
+
+                                                         Collexia Regno :2016/0422
+                                                              Beyond Collections
+        Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                          Website: www.collexia.co
+    Document Sign-Off
+
+         ●​ All parties involved acknowledge that they have read, understood and agree with the contents
+              of this document.
+
+
+
+
+ACCEPTANCE
+
+Full Name                      Role                                     Signature                              Date
+
+Shaun Seboa                    Chief Executive Officer
+
+Full Name
+
+Annette Steenekamp
+                               Role
+
+
+
+
+                                                    ft
+                               Chief Information Officer
+                                                                        Signature                              Date
+                  ra
+D
+
+
+                                                     Collexia Regno :2016/0422
+                                                          Beyond Collections
+    Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                      Website: www.collexia.co
+Table Of Contents
+
+1. Scope.................................................................................................................................. 5
+2. Introduction........................................................................................................................ 5
+3. General Definitions............................................................................................................ 5
+4. Overview of Message Flows............................................................................................. 6
+    4.1. Flow chart of Enhanced Credits Transfer............................................................... 6
+    4.2. Request Transfer Information of Enhanced Credit................................................ 7
+5. Security Requirement........................................................................................................ 7
+6. REST API.............................................................................................................................7
+    Error Handling.................................................................................................................. 7
+7. Enhanced Credit (EnCr).....................................................................................................9
+    7.1. EnCr Transfer.............................................................................................................9
+    7.2. EnCr Transfer Information......................................................................................10
+
+
+
+
+                                                     ft
+8. Error Handling.................................................................................................................. 11
+    8.1. If the API is not Successful Status <> 200 or 204 , the API will respond with a json
+    response Error..................................................................................................................11
+    8.2. Example - Error......................................................................................................... 11
+9. Structures......................................................................................................................... 12
+                ra
+    9.1. EnCr Transfer Request........................................................................................... 12
+    9.2. EnCr Transfer Info Request....................................................................................13
+    9.3. EnCr Transfer Info Response.................................................................................13
+    9.4. Error Response....................................................................................................... 13
+    9.5. Errors........................................................................................................................14
+10. Appendix A– Response Codes..................................................................................... 15
+11. Appendix B - Error Codes (Internal transfer issues).................................................. 15
+12. Appendix C - Bank......................................................................................................... 16
+D
+13. Appendix D - Industry Response Codes (displayed on website).............................. 17
+14. Appendix E– Mapping between Response Codes and Industry Codes................... 18
+
+
+
+
+                                                 Collexia Regno :2016/0422
+                                                      Beyond Collections
+Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                  Website: www.collexia.co
+1.​        Scope
+         This document is intended for analysts and programmers of institutions, which wish to
+         implement Enhanced Credits.                 It is assumed that the reader is familiar with data
+         processing concepts in general data structures. This document addresses and details
+         the Application Level Interface, Standard Message Formats and Node Processing
+         Requirements.
+
+
+
+
+2.​        Introduction
+
+
+
+                                                 ft
+         Collexia will supply the interface to connect to its core system, to enable the
+         transaction flow via its switching software. Collexia will obtain the payments collected
+         on behalf of the lender. The document will provide the interface specification between
+               ra
+         the two parties.
+
+
+
+
+3.​        General Definitions
+D
+API                         Application Programming Interface
+
+
+MIT ENSEMBLE                Transaction Switching Software
+
+EnDO                        Enhanced Debit Order
+
+EnCr                        Enhanced Credit
+
+IRIS                        Intersystems data base product and Integration tool
+
+INTID                       Installment ID - unique number for a specific Installment of a mandate
+
+IOMID                       InOutMessage ID - system reference for a specific transaction
+
+
+
+
+                                                  Collexia Regno :2016/0422
+                                                       Beyond Collections
+ Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                   Website: www.collexia.co
+4.​         Overview of Message Flows
+
+ 4.1.​         Flow chart of Enhanced Credits Transfer
+
+
+
+
+      1.​
+
+
+      2.​
+             The        Integrator        sends
+
+
+
+
+                                                 ft     an       Enhanced
+             (EnCrTransferRequest) to the Collexia Switch as an API REST operation.
+                                                                                    Credit
+
+
+             The EnCr Transfer is captured and a response is sent back from the Collexia Switch
+             to the Integrator.
+                                                                                                 Transfer         Request
+               ra
+      3.​    To receive the current or final fate of the EnCr the Integrator must call Request Info
+             of Enhanced Credit (EnCrTransferInfoRequest)
+D
+
+
+                                                  Collexia Regno :2016/0422
+                                                       Beyond Collections
+ Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                   Website: www.collexia.co
+ 4.2.​        Request Transfer Information of Enhanced Credit
+
+
+
+
+        1.​ The      Integrator        sends       an      Enhanced         Credit      Transfer        info     Request
+
+
+
+
+              the Integrator.
+
+                                                ft
+            (EnCrTransferInfoRequest) to the Collexia Switch as an API REST operation.
+        2.​ The Request is processed and a response is sent back from the Collexia Switch to
+              ra
+5.​ Security Requirement
+        This information will be shared in a separate document, due to the confidential nature
+        of this information.
+D
+        The Calculation formula of the RemoteReferenceNo will be supplied as well.
+
+
+
+6.​ REST API
+
+        The following Two(2) API’s are the integration between Collexia and the
+        Integration partners:
+
+
+         EnCr Transfer                           EnCr Transfer Information
+
+
+
+        Error Handling
+                                                 Collexia Regno :2016/0422
+                                                      Beyond Collections
+Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                  Website: www.collexia.co
+          All HTTP response status codes are separated into five classes or categories. The first
+          digit of the status code defines the class of response, while the last two digits do not
+          have any classifying or categorization role. There are five classes defined by the
+          standard:
+
+
+                 ●​ 1xx Informational response – the request was received, continuing the
+                      process.
+                 ●​ 2xx Successful – the request was successfully received, understood, and
+                      accepted.
+                 ●​ 3xx Redirection – further action needs to be taken in order to complete the
+                      request.
+                 ●​ 4xx Client error – this class of status code indicates that the client seems to
+                      have erred. The request contains bad syntax or cannot be fulfilled.
+
+
+
+
+                                                  ft
+                 ●​ 5xx Server error – the server failed to fulfill an apparently valid request.
+
+
+          As an example, these are the status codes used by the REST API’s:
+                ra
+Status Code:                Description:
+
+         200                OK Everything worked as expected.
+
+         201                A resource was successfully created in response to a POST re
+                            quest. The Location header contains the URL pointing to the newly created
+                            resource.
+D
+         204                The request was handled successfully and the response contains no body
+                            content (like a DELETE request).
+
+         304                The resource was not modified. You can use the cached version.
+
+         400                Bad request. This could be caused by various actions by the user, such as
+                            providing invalid JSON data in the request body etc.
+
+         401                Authentication failed.
+
+         403                The authenticated user is not allowed to access the specified API endpoint.
+
+         404                The requested resource does not exist.
+
+
+
+                                                   Collexia Regno :2016/0422
+                                                        Beyond Collections
+  Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                    Website: www.collexia.co
+        405                Method not allowed. Please check the Allow header for the allowed HTTP
+                           methods.
+
+        415                Unsupported media type. The requested content type or version number is
+                           invalid.
+
+        422                Data validation failed (in response to a POST request, for example). Please
+                           check the response body for detailed error messages.
+
+        429                Too many requests. The request was rejected due to rate limiting.
+
+        500                Internal server error. This could be caused by internal program errors
+
+
+
+ ​
+
+
+
+
+7.​          Enhanced Credit (EnCr)
+                                                 ft
+               ra
+     7.1.​     EnCr Transfer
+Location          https://<host>/api/coswitchuadsrest/v3/encr/transfer
+
+Purpose           This will be used for an Enhanced Credit Transfer Request
+
+Method            EnCr Request
+D
+Verb              POST
+
+Parameter
+                    Name                   Type        Data type                          Comment
+
+
+
+
+Payload
+                    Name                   Type        Data type                          Comment
+
+                    EnCr Transfer          raw         encrtransferrequest                Structure of EnCr Request
+                    Request
+
+
+                          {
+                          ​ "remoteGid": 39,
+                          ​ "remoteReferenceNo": "0029789700RB39",
+                                                  Collexia Regno :2016/0422
+                                                       Beyond Collections
+ Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                   Website: www.collexia.co
+                          ​ "messageDate": "20240614",
+                          ​ "messageTime": "144230",
+                          ​ "fromGlobalId": 18113,
+                          ​ "fromAccountNo": "",
+                          ​ "fromAccountType":2,
+                          ​ "fromBanId":65,
+                          ​ "systemUserName": “cxuser”,
+                            "frontEndUserName": "ruaanb”,
+                          ​ "transactionAmount": 235.45,
+                          ​ "ownStatementReference": "Payment for a loan",
+                          ​ "beneficiaryReference": "Disbursement",
+                            “contractReference”: “”,
+                          ​ "toAccountNo": "634722174",
+                          ​ "toBanId": 65,
+                          ​ "toAccountType":1,
+                          ​ “transferAlreadyAuthed”:true,
+                          ​ "uacId":45
+                          }
+
+
+Response
+                    Status
+
+                    200
+                                   Return type
+
+                                    None
+
+
+
+
+                                                 ft
+                    ***Plus Additional Status codes
+                                                      Comment
+
+                                                      Successful
+               ra
+Response                  204 - No Content
+payload
+
+
+
+
+    7.2.​      EnCr Transfer Information
+D
+Location          https://<host>/api/coswitchuadsrest/v3/encr/info
+
+Purpose           This will let you know if the enhanced credit transfer was successful or not.
+
+Method            EnCr Transfer Information Request
+
+Verb              POST
+
+Parameter
+                    Name                   Type        Data type                           Comment
+
+
+
+
+Payload
+                    Name                   Type        Data type                           Comment
+
+
+                                                  Collexia Regno :2016/0422
+                                                       Beyond Collections
+ Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                   Website: www.collexia.co
+                    EnCr Request           raw          encrtransferinforequest            Structure of Enhanced Credit
+                    Info                                                                   Info Request
+
+
+                          {
+                             "remoteReferenceNo": "0029789700RB39",
+                             "systemUserName": “cxuser”,
+                             "frontEndUserName": "ruaanb”,
+                             "remoteGid":39,
+                             "messageDate": "20240614",
+                          ​ "messageTime": "144230",
+                          ​ "uacId":45
+                          }​
+
+
+Response
+                    Status          Return type        Comment
+
+                    200             None               Successful
+
+                                    encrtransferi      Structure of Enhanced Credit Transfer Info Response
+
+
+
+
+Response
+                                    nforesponse
+
+
+
+
+                                                 ft
+                    ***Plus Additional Status code
+               ra
+payload                   200 - OK
+
+                          {
+                              "status":4,
+                              "statusDate":”20250722”,
+                              "statusTime":"140930",
+                              "amountPaidOut":235.45,
+                              "responseCode": “DU03”
+                              “responseDescription”:”Duplicated Transaction”
+                          }
+D
+
+8.​        Error Handling
+
+ 8.1.​         If the API is not Successful Status <> 200 or 204 , the
+               API will respond with a json response Error
+
+ 8.2.​         Example - Error
+                                                   {
+                                                       "errors":[
+                                                        {
+                                                          "rcoId":1001,
+                                                  Collexia Regno :2016/0422
+                                                       Beyond Collections
+ Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                   Website: www.collexia.co
+                                                              "code":"1001",
+                                                              "message":"Account Invalid",
+                                                              "detail":""
+                                                          }
+                                                         ],
+                                                         "status":400,
+                                                         "summary":"Transaction Failed"
+                                                     }
+
+
+9.​         Structures
+
+  9.1.​         EnCr Transfer Request
+Name                         Type                Flag               Pattern         Comment
+
+remoteGid
+
+remoteReferenceNo
+
+
+messageDate
+                             integer
+
+                             string(14)
+
+
+                             string(8)
+
+
+                                                 ft
+                                                 R
+
+                                                 R
+
+
+                                                 R
+                                                               N2
+
+                                                               Characters a-z,
+                                                               A-Z,0-9
+
+                                                               yyyymmdd
+                                                                                    Remote GID given
+
+                                                                                    Unique Reference No calculated by
+                                                                                    integrator to identify this Request
+
+                                                                                    Message Date
+                ra
+messageTime                  string(6)           R             hhmmss               Message Time
+
+fromGlobalId                 integer             R             N5                   Global ID from
+
+fromAccountNo                string(20)          O             Characters 0-9       Account No from
+
+fromAccountType              integer             R             N2                   Account Type from
+                                                                                    1 - Current (Cheque)
+                                                                                    2 - Savings
+
+fromBanId                    integer             R             N2                   Bank ID - Appendix
+D
+systemUserName               string(20)          R             Characters a-z,      System User Name as provided
+                                                               A-Z,0-9
+
+frontEndUserName             string(20)          R             Characters a-z,      User name as per Integrator’s
+                                                               A-Z,0-9              application
+
+transactionAmount            decimal             R             N15.2                Transaction Amount (In N$)
+
+ownStatementReference        string(40)          R             Characters a-z,      Own Statement Reference
+                                                               A-Z,0-9
+
+beneficiaryReference         string(40)          R             Characters a-z,      Beneficiary Reference
+                                                               A-Z,0-9
+
+contractReference            string(14)          O             Characters a-z,      Contract Reference
+                                                               A-Z,0-9
+
+toAccountType                integer             R             Characters 1,2       Account Type to
+                                                                                    1 - Current (Cheque)
+                                                                                    2 - Savings
+
+
+                                                  Collexia Regno :2016/0422
+                                                       Beyond Collections
+ Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                   Website: www.collexia.co
+toAccountNo                   Integer             R          N2                      Account No to
+
+toBanId                       integer             R          N2                      Bank ID (for appendix provided)
+
+transferAlreadyAuthed         Boolean             R          true,false              Flag to say if transfer was already
+                                                                                     authorized prior to request or not
+
+uacId                         integer             R          N6                      User Access ID as provided
+
+
+
+
+    9.2.​       EnCr Transfer Info Request
+Name                          Type                Flag             Pattern           Comment
+
+remoteReferenceNo             string              R          Characters a-z,         Remote Reference No of Transfer
+                                                             A-Z,0-9                 request you need information from
+
+systemUserName                string(20)          R          Characters a-z,         System User Name as provided
+                                                             A-Z,0-9
+
+frontEndUserName
+
+
+remoteGid
+
+messageDate
+                              string(20)
+
+
+                              integer
+
+                              string(8)
+
+
+                                                  ft
+                                                  R
+
+
+                                                  R
+
+                                                  R
+                                                             Characters a-z,
+                                                             A-Z,0-9
+
+                                                             N2
+
+                                                             yyyymmdd
+                                                                                     User name as per Integrator’s
+                                                                                     application
+
+                                                                                     Remote GID given
+
+                                                                                     Message Date
+                ra
+messageTime                   string(6)           R          hhmmss                  Message Time
+
+uacId                         integer             R          N6                      User Access ID as provided
+
+
+
+    9.3.​       EnCr Transfer Info Response
+Name                          Type                Flag             Pattern           Comment
+
+status                        integer             R          Characters a-z,         1 - Loaded
+D
+                                                             A-Z                     2 - Approved
+                                                                                     3 - Completed
+                                                                                     4 - Rejected
+                                                                                     5 - Cancelled
+                                                                                     6 - Submitted
+                                                                                     7 - Declined
+
+statusDate                    string(8)           R          yyyymmdd                Date of Status
+
+statusTime                    string(6)           R          hhmmss                  Time of Status
+
+amountPaidOut                 decimal             R          N15.2                   Amount Paid Out (0 if error occurred)
+
+responseCode                  string(8)           R          Characters a-z,         Response Code
+                                                             A-Z,0-9
+
+responseDescription           string(250)         R          Characters a-z,         Response Description
+                                                             A-Z,0-9
+
+
+
+
+                                                   Collexia Regno :2016/0422
+                                                        Beyond Collections
+  Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                    Website: www.collexia.co
+     9.4.​      Error Response
+Name                          Type                Flag             Pattern           Comment
+
+status                        string(8)           C          Status of Error         status
+
+summary                       string(50)          C          Summary of Error        summary
+
+errors                        errors              C          ErrorCodes              errors
+
+
+
+     9.5.​      Errors
+Name                          Type                Flag             Pattern           Comment
+
+rcoId                         integer             C          Error Code ID           Internal Reference
+
+code                          string(8)           C          Error Code              Code (Appendix)
+
+message                       string(250)         C          Error Text              message
+
+detail                        string(50)
+
+
+
+
+                                                  ft
+                                                  C          Detail of the Error     detail
+                ra
+D
+
+
+                                                   Collexia Regno :2016/0422
+                                                        Beyond Collections
+  Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                    Website: www.collexia.co
+10.​           Appendix A– Response Error Codes
+ Response Code                                           Description
+
+ 0                                                       Transaction Successful
+
+ 02                                                      Insufficient Funds (Rejected)
+
+ 03                                                      Debits not allowed to this Account
+
+ 06                                                      Account Frozen
+
+ 12                                                      Account Closed
+
+ 18                                                      Account holder deceased
+
+ 30                                                      No authority to debit
+
+ 40
+
+ 44
+
+ 48
+
+                                                     ft  Item limit exceeded
+
+                                                         Unable to Process
+
+                                                         Account no fails CDV routine
+                   ra
+ 56                                                      Non Fica Compliant Account
+
+
+
+
+11.​           Appendix B - Error Codes (Internal transfer
+D
+               issues)
+ Error Code                                              Description:
+
+ 5672                                                    Merchant Not Allowed
+
+ 10539                                                   Error adding transactions details (ADD IOM)
+
+ 10550                                                   Error updating mandate details (Update MDA)
+
+ 10577                                                   Error getting header details (GET IOH)
+
+ 10578                                                   Error getting transactions details (GET IOM)
+
+ 10580                                                   Error getting mandate details (GET MDA)
+
+ 10584                                                   Error updating header details (PUT IOH)
+
+                                                      Collexia Regno :2016/0422
+                                                           Beyond Collections
+     Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                       Website: www.collexia.co
+ 10586                                                Error adding transfer details (ADD TIN)
+
+ 10587                                                Error getting transfer details (GET TIN)
+
+ 10588                                                Erroring in updating TIN Status
+
+ 10590                                                Execute SQL
+
+ 10592                                                Error getting merchant details (GET MFS)
+
+ 10593                                                Error updating merchant details (PUT MFS)
+
+ 10594                                                Merchant Not Allowed to Transfer
+
+ 10595                                                Transaction Limit Exceeded
+
+ 10596                                                Daily Limit Exceeded
+
+ 10597                                                Monthly Limit Exceeded
+
+ 10598                                                Duplicate Transfer
+
+ 10599
+
+ 10620
+
+ 10623
+                                                  ft  Error updating transfer details (PUT TIN)
+
+                                                      Error adding transfer successful history (ADD DHI)
+
+                                                      Error adding transfer rejected history (ADD DRH)
+                ra
+ 10626                                                Duplicate Transfer Reference
+
+
+
+12.​        ​ Appendix C - Bank
+ BANRno (Bank ID)                                     Description:
+
+ 64                                                   Bank Windhoek
+D
+ 65                                                   FNB Namibia
+
+ 66                                                   TrustCo Bank
+
+ 67                                                   Bank Atlántico
+
+ 68                                                   BankBIC
+
+ 69                                                   Bank of Namibia
+
+ 70                                                   Letshego Bank Namibia
+
+ 71                                                   Nedbank Namibia
+
+ 72                                                   Standard Bank Namibia
+
+
+
+
+                                                   Collexia Regno :2016/0422
+                                                        Beyond Collections
+  Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                    Website: www.collexia.co
+13.​        Appendix D - Industry Response Codes
+            (displayed on website)
+ Response Code                                        Description
+ RR01                                                Incorrect Creditor Account Number
+ RR02                                                Incorrect Debtor Account Number
+ RR03                                                Closed Creditor Account Number
+ RR04                                                Closed Debtor Account Number
+ RR05                                                Blocked Creditor Account
+ RR06                                                Blocked Debtor Account
+ RR07                                                End Customer Deceased
+ RR08                                                Incorrect Creditor Agent Account
+ RR09
+
+ RR10
+
+ RR11
+
+                                                  ft Incorrect Debtor Agent Account
+
+                                                     Insufficient funds
+
+                                                     Incorrect Related Transaction Reference
+                ra
+ RR12                                                Unrecognized Initiating Party
+ RR13                                                Regulatory Reason
+ RR14                                                Not Allowed Payment (Credit)
+ RR15                                                Not Allowed Payment (Debit)
+ RR16                                                Refund Request By End Customer
+D
+ RR17                                                Response / Request received after Cut‐off Time
+
+ NA01                                                Resolution response exceeds SLA cut‐off
+
+ NA04                                                Payment stopped (by the account holder)
+
+ NA28                                                Recall/withdrawal
+
+ NA30                                                No authorization to debit
+
+ NA32                                                Debit in contravention of the authorized payer
+
+ NA34                                                Authorization cancelled
+
+ NA36                                                Previously stopped via Stop Payment Advice
+
+ INV1                                                Invalid Supplier
+ TX01                                                Incorrect Tax Reference Number supplied
+
+
+                                                   Collexia Regno :2016/0422
+                                                        Beyond Collections
+  Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                    Website: www.collexia.co
+ TR75                                                Insufficient Funds (Tracking)
+
+ TR76                                                Insufficient Funds (Rejected)
+
+ TR77                                                Stop Payment (Rejected)
+
+
+
+
+14.​        Appendix E– Mapping between Response
+            Codes and Industry Codes
+ Industry Code                                        Response               Description
+                                                      Code
+
+ ACCP                                                 0                      Transaction Successful
+
+ TR76 / RR10                                          02                     Insufficient Funds (Rejected)
+
+ RR15 / RR14
+
+
+ RR05 / RR06
+
+
+                                                  ft  03
+
+
+                                                      06
+
+
+                                                      12
+                                                                             Debits not allowed to this account
+
+
+                                                                             Account Frozen
+
+
+                                                                             Account Closed
+                ra
+ RR03 / RR04
+
+ NA30                                                 30                     No authority to debit
+
+ RR01 / RR02                                          48                     Account No Fails CDV Routine
+
+ TR75                                                 99                     Tracking (Held for representment)
+D
+
+
+                                                   Collexia Regno :2016/0422
+                                                        Beyond Collections
+  Central Office Park unit 5, 7 Seitz Street,Windhoek, Namibia. .PO Box 150, Windhoek, Namibia, 9000. Tel: +264 61 21 2567.
+                                                    Website: www.collexia.co
+

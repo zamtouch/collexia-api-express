@@ -1,0 +1,738 @@
+{
+	"info": {
+		"_postman_id": "collexia-api-collection-2025",
+		"name": "Collexia Rental Payment API",
+		"description": "Complete API collection for Collexia integration - Student Rental Payment System\n\n**Environment Setup:**\n1. Import the environment file: `Collexia_API.postman_environment.json`\n2. Select 'Collexia API - UAT' environment\n3. Update `base_url` if your server is not on localhost\n\n**Quick Start:**\n1. Test Health Check first\n2. Create a Student with UAT test account\n3. Create a Property\n4. Register a Mandate\n5. Check Mandate Status\n6. Download Payments",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "collexia-integration"
+	},
+	"item": [
+		{
+			"name": "System",
+			"item": [
+				{
+					"name": "Health Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has success field\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"health"
+							]
+						},
+						"description": "Check if the API is running and healthy. This is a good first test to verify your API server is accessible."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/v1/health",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"health"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"API is running\",\n    \"timestamp\": \"2025-11-17 12:00:00\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Students",
+			"item": [
+				{
+					"name": "List All Students",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/students",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"students"
+							]
+						},
+						"description": "Get a list of all registered students/tenants"
+					},
+					"response": []
+				},
+				{
+					"name": "Create/Update Student",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201 or 200\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"",
+									"pm.test(\"Response has success field\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});",
+									"",
+									"// Save student_id for later use",
+									"if (pm.response.code === 201 || pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.data && jsonData.data.student_id) {",
+									"        pm.environment.set('last_student_id', jsonData.data.student_id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"student_id\": \"STU{{$randomInt}}\",\n  \"full_name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"0812345678\",\n  \"id_number\": \"1234567890123\",\n  \"id_type\": 1,\n  \"account_number\": \"{{uat_active_account}}\",\n  \"account_type\": 1,\n  \"bank_id\": 65\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/students",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"students"
+							]
+						},
+						"description": "Create or update a student/tenant record\n\n**ID Types:**\n- 1 = RSA ID\n- 2 = Passport\n- 3 = Temp ID\n- 4 = Business\n\n**Account Types:**\n- 1 = Current (Cheque)\n- 2 = Savings\n- 3 = Transmission\n\n**Bank IDs:**\n- 64 = Bank Windhoek\n- 65 = FNB Namibia\n- 66 = TrustCo Bank\n- 67 = Bank Atlántico\n- 68 = BankBIC\n- 69 = Bank of Namibia\n- 70 = Letshego Bank Namibia\n- 71 = Nedbank Namibia\n- 72 = Standard Bank Namibia\n\n**UAT Test Accounts:**\n- Active: 62001543455, 62001543405, 62001543398\n- Inactive: 62001623380, 62002288539\n- Closed: 62001871799, 62003081560\n- Frozen: 62001914812"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Student by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/students/{{test_student_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"students",
+								"{{test_student_id}}"
+							]
+						},
+						"description": "Get details of a specific student by their student_id"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Properties",
+			"item": [
+				{
+					"name": "List All Properties",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/properties",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"properties"
+							]
+						},
+						"description": "Get a list of all rental properties"
+					},
+					"response": []
+				},
+				{
+					"name": "Create/Update Property",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201 or 200\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"",
+									"// Save property_id for later use",
+									"if (pm.response.code === 201 || pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.data && jsonData.data.property_id) {",
+									"        pm.environment.set('last_property_id', jsonData.data.property_id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"property_code\": \"PROP{{$randomInt}}\",\n  \"property_name\": \"Student Residence Block A\",\n  \"address\": \"123 Main Street, Windhoek, Namibia\",\n  \"monthly_rent\": 5000.00\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/properties",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"properties"
+							]
+						},
+						"description": "Create or update a rental property"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Property by Code",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/properties/{{test_property_code}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"properties",
+								"{{test_property_code}}"
+							]
+						},
+						"description": "Get details of a specific property by property_code"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Mandates",
+			"item": [
+				{
+					"name": "Register Mandate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has success field\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});",
+									"",
+									"// Save contract_reference for later use",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.data && jsonData.data.contract_reference) {",
+									"        pm.environment.set('last_contract_reference', jsonData.data.contract_reference);",
+									"        console.log('Contract Reference saved: ' + jsonData.data.contract_reference);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"student_id\": \"{{test_student_id}}\",\n  \"property_id\": {{test_property_id}},\n  \"monthly_rent\": 100.00,\n  \"start_date\": \"20250101\",\n  \"frequency_code\": 4,\n  \"no_of_installments\": 12,\n  \"tracking_days\": 3,\n  \"mag_id\": 46\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/mandates/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"mandates",
+								"register"
+							]
+						},
+						"description": "Register a new mandate for rent payment collection\n\n**Frequency Codes:**\n- 1 = Weekly\n- 3 = Fortnightly\n- 4 = Monthly\n- 5 = Monthly by Rule\n\n**MAG IDs:**\n- 20 = TMCT\n- 21 = MCT\n- 45 = DC\n- 46 = Endo\n- 54 = RM\n\n**UAT Test Accounts:**\n- Active: 62001543455, 62001543405, 62001543398\n- Inactive: 62001623380, 62002288539\n- Closed: 62001871799, 62003081560\n- Frozen: 62001914812\n\n**Note:** Use amount 100.00 N$ for UAT testing (lower limits in UAT environment)"
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"student_id\": \"STU001\",\n  \"property_id\": 1,\n  \"monthly_rent\": 100.00,\n  \"start_date\": \"20250101\",\n  \"frequency_code\": 4,\n  \"no_of_installments\": 12,\n  \"tracking_days\": 3,\n  \"mag_id\": 46\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/mandates/register",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"mandates",
+										"register"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Mandate registered successfully\",\n    \"data\": {\n        \"contract_reference\": \"31281117385028\",\n        \"mandate_id\": 1,\n        \"status\": \"registered\"\n    },\n    \"timestamp\": \"2025-11-17 12:00:00\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Check Mandate Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has mandateLoaded field\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.data) {",
+									"        pm.expect(jsonData.data).to.have.property('mandateLoaded');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"contract_reference\": \"{{last_contract_reference}}\",\n  \"front_end_user_name\": \"test_user\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/mandates/status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"mandates",
+								"status"
+							]
+						},
+						"description": "Check the final status of a registered mandate. Uses the contract_reference from the last registered mandate."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"contract_reference\": \"31281117385028\",\n  \"front_end_user_name\": \"test_user\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/mandates/status",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"mandates",
+										"status"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Operation successful\",\n    \"data\": {\n        \"mandateLoaded\": true,\n        \"mandateLoadedResponseCode\": \"00\",\n        \"authorizationOutstanding\": 2\n    },\n    \"timestamp\": \"2025-11-17 12:00:00\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Mandate Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/mandates/{{last_contract_reference}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"mandates",
+								"{{last_contract_reference}}"
+							]
+						},
+						"description": "Get full details of a mandate including student and property information"
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Mandate",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"contract_reference\": \"{{last_contract_reference}}\",\n  \"front_end_user_name\": \"test_user\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/mandates/cancel",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"mandates",
+								"cancel"
+							]
+						},
+						"description": "Cancel an existing mandate"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payments",
+			"item": [
+				{
+					"name": "Download Payment History",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has merchantGid\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.data) {",
+									"        pm.expect(jsonData.data).to.have.property('merchantGid');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/payments/download",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"payments",
+								"download"
+							]
+						},
+						"description": "Download payment history from Collexia. This calls the Collexia API directly and handles all authentication automatically."
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/payments/download",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"payments",
+										"download"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Operation successful\",\n    \"data\": {\n        \"merchantGid\": 12584,\n        \"noOfResponses\": 0,\n        \"responses\": []\n    },\n    \"timestamp\": \"2025-11-17 12:00:00\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Payments by Student",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/payments/student/{{test_student_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"payments",
+								"student",
+								"{{test_student_id}}"
+							]
+						},
+						"description": "Get payment history for a specific student"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Payments by Contract",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/payments/contract/{{last_contract_reference}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"payments",
+								"contract",
+								"{{last_contract_reference}}"
+							]
+						},
+						"description": "Get payment history for a specific contract/mandate"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost/collexia",
+			"type": "string",
+			"description": "Base URL - includes /collexia since project is in htdocs/collexia"
+		}
+	]
+}

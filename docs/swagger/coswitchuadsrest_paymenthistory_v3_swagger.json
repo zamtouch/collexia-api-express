@@ -1,0 +1,344 @@
+{
+  "info": {
+    "title": "coswitchuadsrest-paymenthistory",
+    "description": "Payment History API",
+    "version": "1.0.0",
+    "contact": {
+      "name": "SoftSplice",
+      "url": "https://www.softsplice.co.za",
+      "email": "support@softsplice.co.za"
+    },
+    "x-ISC_DispatchParent": "REST.CORSHandler",
+    "x-ISC_Import": "IO.REST.OpenAPI.PaymentHistory.CollectionsNAM.V3"
+  },
+  "tags": [],
+  "paths": {
+    "/v3/paymenthistory/download": {
+      "post": {
+        "summary": "Request for Download of Payments",
+        "deprecated": false,
+        "description": "",
+        "operationId": "post-download",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/downloadPaymentsRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/downloadPaymentsResponse"
+            }
+          },
+          "400": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "",
+            "headers": {},
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    }
+  },
+  "security": [
+    {
+      "basic": []
+    }
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "swagger": "2.0",
+  "definitions": {
+    "errors": {
+      "type": "object",
+      "properties": {
+        "rcoId": {
+          "type": "integer",
+          "description": "Internal Reference"
+        },
+        "code": {
+          "type": "string",
+          "description": "Error Code",
+          "minLength": 1,
+          "maxLength": 8
+        },
+        "message": {
+          "type": "string",
+          "description": "Error Message",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "detail": {
+          "type": "string",
+          "description": "Error Detail",
+          "minLength": 1,
+          "maxLength": 50
+        }
+      },
+      "required": [
+        "rcoId",
+        "code",
+        "message",
+        "detail"
+      ]
+    },
+    "errorResponse": {
+      "type": "object",
+      "properties": {
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/errors",
+            "description": "Error Detail"
+          },
+          "description": "Error Detail"
+        },
+        "status": {
+          "type": "string",
+          "description": "Status Code of Error",
+          "minLength": 1,
+          "maxLength": 8
+        },
+        "summary": {
+          "type": "string",
+          "description": "Summary of Error",
+          "minLength": 1,
+          "maxLength": 50
+        }
+      },
+      "required": [
+        "errors",
+        "status",
+        "summary"
+      ]
+    },
+    "downloadPaymentsRequest": {
+      "type": "object",
+      "properties": {
+        "merchantGid": {
+          "type": "integer",
+          "description": "The Merchant’s GID provided"
+        },
+        "frontEndUserName": {
+          "type": "string",
+          "description": "This will be the System Username that was provided to you by Softsplice.",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "remoteGid": {
+          "type": "integer",
+          "description": "System ID"
+        }
+      },
+      "required": [
+        "merchantGid",
+        "frontEndUserName",
+        "remoteGid"
+      ]
+    },
+    "downloadPaymentsResponse": {
+      "type": "object",
+      "properties": {
+        "merchantGid": {
+          "type": "integer",
+          "description": "The Merchant’s GID provided"
+        },
+        "noOfResponses": {
+          "type": "integer",
+          "description": "Number of responses sent in download."
+        },
+        "responses": {
+          "type": "array",
+          "items": {
+            "description": "Responses",
+            "$ref": "#/definitions/downloadPaymentsDetailsResponse"
+          },
+          "description": "Responses"
+        }
+      },
+      "required": [
+        "merchantGid",
+        "noOfResponses",
+        "responses"
+      ]
+    },
+    "downloadPaymentsDetailsResponse": {
+      "type": "object",
+      "properties": {
+        "magID": {
+          "type": "integer",
+          "description": "20 - TMCT\n21 - MCT\n45 - DC\n46 - Endo\n54 - RM\n"
+        },
+        "clientNo": {
+          "type": "string",
+          "description": "Alphanumeric number for the client.",
+          "minLength": 1,
+          "maxLength": 15
+        },
+        "userReference": {
+          "type": "string",
+          "description": "Alphanumeric reference for the mandate.",
+          "minLength": 1,
+          "maxLength": 15
+        },
+        "debtorAccountNumber": {
+          "type": "string",
+          "description": "Account number of the Debtor.",
+          "minLength": 1,
+          "maxLength": 20
+        },
+        "clientInitials": {
+          "type": "string",
+          "description": "Initials of the client.",
+          "minLength": 1,
+          "maxLength": 10
+        },
+        "clientSurname": {
+          "type": "string",
+          "description": "Surname of the client",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "clientId": {
+          "type": "string",
+          "description": "Identification number of the client.",
+          "minLength": 1,
+          "maxLength": 33
+        },
+        "statementRef": {
+          "type": "string",
+          "description": "Statement Reference to be displayed on the Payer Statement",
+          "minLength": 1,
+          "maxLength": 140
+        },
+        "contractStatus": {
+          "type": "integer",
+          "description": "Status of the AC mandate on the database.\n\n1 - Other\n2 - Active\n3 - Completed\n4 - Cancelled\n5 - Suspended\n"
+        },
+        "magDescription": {
+          "type": "string",
+          "description": "Description of magId",
+          "minLength": 1,
+          "maxLength": 9
+        },
+        "paymentDate": {
+          "type": "string",
+          "description": "Date payment was received for installment.\n",
+          "format": "yyyymmdd",
+          "minLength": 8,
+          "maxLength": 8
+        },
+        "paymentAmount": {
+          "type": "number",
+          "description": "Payment amount sent in Currency"
+        },
+        "previousID": {
+          "type": "integer",
+          "description": "For batched downloads, usually = 0"
+        },
+        "batchNumber": {
+          "type": "integer",
+          "description": "For batched downloads, usually = 0"
+        },
+        "id": {
+          "type": "integer",
+          "description": "System field: ID of collection/rejection history "
+        },
+        "trackingDate": {
+          "type": "string",
+          "description": "Date the installment started tracking.",
+          "format": "yyyymmdd",
+          "minLength": 8,
+          "maxLength": 8
+        },
+        "contractReference": {
+          "type": "string",
+          "description": "14 Character unique number for the mandate.",
+          "minLength": 14,
+          "maxLength": 14
+        },
+        "installmentNo": {
+          "type": "integer",
+          "description": "Installment No"
+        },
+        "merchantStatementReference": {
+          "type": "string",
+          "description": "Statement Reference to be displayed on the Merchant Statement",
+          "minLength": 1,
+          "maxLength": 140
+        },
+        "payerStatementReference": {
+          "type": "string",
+          "description": "Statement Reference to be displayed on the Payer Statement",
+          "minLength": 1,
+          "maxLength": 140
+        },
+        "responseCode": {
+          "type": "string",
+          "description": "Response Code",
+          "minLength": 1,
+          "maxLength": 10
+        }
+      },
+      "required": [
+        "magID",
+        "clientNo",
+        "userReference",
+        "debtorAccountNumber",
+        "statementRef",
+        "contractStatus",
+        "paymentDate",
+        "paymentAmount",
+        "id",
+        "contractReference",
+        "installmentNo",
+        "merchantStatementReference",
+        "payerStatementReference",
+        "responseCode"
+      ]
+    }
+  },
+  "securityDefinitions": {
+    "basic": {
+      "type": "basic"
+    }
+  },
+  "x-components": {}
+}
